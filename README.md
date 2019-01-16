@@ -1,20 +1,56 @@
-# pbs - Go interface to the Torque resource manager library
+# PBSpro golang library
 
-This is a thin Go wrapper around the C library (libtorque) for the [Torque resource manager](http://www.adaptivecomputing.com/products/open-source/torque/).
+This is a thin Go wrapper around the C library (libpbs) for the [PBSpro resource manager]
 
-Documentation about the functions can be found in the man pages of the Torque
-library.
 
-## Install
+## 1.Requirements
 
-    go get github.com/jbarber/pbs
+## 1.1.OS
 
-## Documentation
+You must install some requirements on CentOS 7.
 
-    go doc github.com/jbarber/pbs
+```bash
+# yum groupinstall "Development Tools" -y
+# yum install -y sudo tar wget openssh-server openssh-clients openssl openssl-devel
+# yum install -y gcc make rpm-build libtool hwloc-devel libX11-devel libXt-devel libedit-devel libical-devel ncurses-devel perl postgresql-devel python-devel tcl-devel tk-devel swig expat-devel libXext libXft autoconf automake
+# yum install -y expat libedit postgresql-server python sendmail tcl tk libical
+```
+
+## 1.2.Download && Build PBSpro
+
+Download PBSpro
+
+```bash
+# git clone https://github.com/PBSPro/pbspro.git
+# ./autogen.sh
+# ./configure --prefix=/opt/pbspro
+# make -j4
+# make install
+```
+
+## 1.3.Environment
+
+```bash
+# export LD_LIBRARY_PATH=/opt/pbspro/lib
+# export PBS_EXEC=/opt/pbspro
+# export PBS_SERVER=pm01
+# export PBS_HOME=/opt/pbspro
+```
+
+## 1.4.PBSpro Cluster
+
+A PBSpro Cluster to test.
+
+
+## 2.Install
+
+```bash
+# go get github.com/jbarber/pbs
+```
 
 ## Usage
 
+```go
     package main
 
     import (
@@ -42,18 +78,4 @@ library.
 
         // ...
     }
-
-More examples can be found in the [EXAMPLE.md](EXAMPLE.md)
-
-## Testing
-
-A test suite is present, it requires a running Torque server which accepts jobs
-from the user running the tests. If you have this, just run:
-
-    go test github.com/jbarber/pbs
-
-The test suite also provides examples of how to use the functions.
-
-## Author
-
-Jonathan Barber
+```
