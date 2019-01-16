@@ -20,10 +20,10 @@ package pbs
 
 /*
 #cgo CFLAGS: -g
-#cgo LDFLAGS: -ltorque
+#cgo LDFLAGS: -L/opt/pbspro/lib -lpbs
 #include <stdlib.h>
-#include <torque/pbs_error.h>
-#include <torque/pbs_ifl.h>
+#include "/opt/pbspro/include/pbs_error.h"
+#include "/opt/pbspro/include/pbs_ifl.h"
 
 // I gave up getting the CGO functions for these right, casting was killing me
 static char** mkStringArray (unsigned int len) {
@@ -102,7 +102,7 @@ const (
 	ATTR_a                         string        = C.ATTR_a
 	ATTR_c                         string        = C.ATTR_c
 	ATTR_e                         string        = C.ATTR_e
-	ATTR_f                         string        = C.ATTR_f
+	//ATTR_f                         string        = C.ATTR_f
 	ATTR_g                         string        = C.ATTR_g
 	ATTR_h                         string        = C.ATTR_h
 	ATTR_j                         string        = C.ATTR_j
@@ -113,12 +113,12 @@ const (
 	ATTR_p                         string        = C.ATTR_p
 	ATTR_q                         string        = C.ATTR_q
 	ATTR_r                         string        = C.ATTR_r
-	ATTR_t                         string        = C.ATTR_t
+	//ATTR_t                         string        = C.ATTR_t
 	ATTR_array_id                  string        = C.ATTR_array_id
 	ATTR_u                         string        = C.ATTR_u
 	ATTR_v                         string        = C.ATTR_v
 	ATTR_A                         string        = C.ATTR_A
-	ATTR_args                      string        = C.ATTR_args
+	//ATTR_args                      string        = C.ATTR_args
 	ATTR_M                         string        = C.ATTR_M
 	ATTR_N                         string        = C.ATTR_N
 	ATTR_S                         string        = C.ATTR_S
@@ -126,12 +126,12 @@ const (
 	ATTR_inter                     string        = C.ATTR_inter
 	ATTR_stagein                   string        = C.ATTR_stagein
 	ATTR_stageout                  string        = C.ATTR_stageout
-	ATTR_jobtype                   string        = C.ATTR_jobtype
-	ATTR_submit_host               string        = C.ATTR_submit_host
-	ATTR_init_work_dir             string        = C.ATTR_init_work_dir
+	//ATTR_jobtype                   string        = C.ATTR_jobtype
+	//ATTR_submit_host               string        = C.ATTR_submit_host
+	//ATTR_init_work_dir             string        = C.ATTR_init_work_dir
 	ATTR_ctime                     string        = C.ATTR_ctime
 	ATTR_exechost                  string        = C.ATTR_exechost
-	ATTR_execport                  string        = C.ATTR_execport
+	//ATTR_execport                  string        = C.ATTR_execport
 	ATTR_mtime                     string        = C.ATTR_mtime
 	ATTR_qtime                     string        = C.ATTR_qtime
 	ATTR_session                   string        = C.ATTR_session
@@ -149,32 +149,32 @@ const (
 	ATTR_queue                     string        = C.ATTR_queue
 	ATTR_server                    string        = C.ATTR_server
 	ATTR_maxrun                    string        = C.ATTR_maxrun
-	ATTR_maxreport                 string        = C.ATTR_maxreport
+	//ATTR_maxreport                 string        = C.ATTR_maxreport
 	ATTR_total                     string        = C.ATTR_total
 	ATTR_comment                   string        = C.ATTR_comment
 	ATTR_cookie                    string        = C.ATTR_cookie
 	ATTR_qrank                     string        = C.ATTR_qrank
 	ATTR_altid                     string        = C.ATTR_altid
 	ATTR_etime                     string        = C.ATTR_etime
-	ATTR_exitstat                  string        = C.ATTR_exitstat
-	ATTR_forwardx11                string        = C.ATTR_forwardx11
-	ATTR_submit_args               string        = C.ATTR_submit_args
-	ATTR_tokens                    string        = C.ATTR_tokens
-	ATTR_netcounter                string        = C.ATTR_netcounter
+	//ATTR_exitstat                  string        = C.ATTR_exitstat
+	//ATTR_forwardx11                string        = C.ATTR_forwardx11
+	//ATTR_submit_args               string        = C.ATTR_submit_args
+	//ATTR_tokens                    string        = C.ATTR_tokens
+	//ATTR_netcounter                string        = C.ATTR_netcounter
 	ATTR_umask                     string        = C.ATTR_umask
-	ATTR_start_time                string        = C.ATTR_start_time
-	ATTR_start_count               string        = C.ATTR_start_count
-	ATTR_checkpoint_dir            string        = C.ATTR_checkpoint_dir
-	ATTR_checkpoint_name           string        = C.ATTR_checkpoint_name
-	ATTR_checkpoint_time           string        = C.ATTR_checkpoint_time
-	ATTR_checkpoint_restart_status string        = C.ATTR_checkpoint_restart_status
-	ATTR_restart_name              string        = C.ATTR_restart_name
-	ATTR_comp_time                 string        = C.ATTR_comp_time
-	ATTR_reported                  string        = C.ATTR_reported
-	ATTR_intcmd                    string        = C.ATTR_intcmd
-	ATTR_P                         string        = C.ATTR_P
-	ATTR_node_exclusive            string        = C.ATTR_node_exclusive
-	ATTR_exec_gpus                 string        = C.ATTR_exec_gpus
+	//ATTR_start_time                string        = C.ATTR_start_time
+	//ATTR_start_count               string        = C.ATTR_start_count
+	//ATTR_checkpoint_dir            string        = C.ATTR_checkpoint_dir
+	//ATTR_checkpoint_name           string        = C.ATTR_checkpoint_name
+	//ATTR_checkpoint_time           string        = C.ATTR_checkpoint_time
+	//ATTR_checkpoint_restart_status string        = C.ATTR_checkpoint_restart_status
+	//ATTR_restart_name              string        = C.ATTR_restart_name
+	//ATTR_comp_time                 string        = C.ATTR_comp_time
+	//ATTR_reported                  string        = C.ATTR_reported
+	//ATTR_intcmd                    string        = C.ATTR_intcmd
+	//ATTR_P                         string        = C.ATTR_P
+	//ATTR_node_exclusive            string        = C.ATTR_node_exclusive
+	//ATTR_exec_gpus                 string        = C.ATTR_exec_gpus
 	ATTR_J                         string        = C.ATTR_J
 	SET                            Operator      = C.SET
 	UNSET                          Operator      = C.UNSET
@@ -187,8 +187,8 @@ const (
 	LE                             Operator      = C.LE
 	LT                             Operator      = C.LT
 	DFLT                           Operator      = C.DFLT
-	MERGE                          Operator      = C.MERGE
-	INCR_OLD                       Operator      = C.INCR_OLD
+	//MERGE                          Operator      = C.MERGE
+	//INCR_OLD                       Operator      = C.INCR_OLD
 )
 
 func getLastError() error {
@@ -287,6 +287,7 @@ func Pbs_alterjob(handle int, id string, attribs []Attrib, extend string) error 
 	return nil
 }
 
+/*
 func Pbs_checkpointjob(handle int, id string, extend string) error {
 	s := C.CString(id)
 	defer C.free(unsafe.Pointer(s))
@@ -301,6 +302,7 @@ func Pbs_checkpointjob(handle int, id string, extend string) error {
 
 	return nil
 }
+*/
 
 // Pbs_connect makes a connection to server, or if server is an empty string, the default server. The returned handle is used by subsequent calls to the functions in this package to identify the server.
 func Pbs_connect(server string) (int, error) {
@@ -345,15 +347,19 @@ func Pbs_disconnect(handle int) error {
 	return nil
 }
 
+/*
 func Pbs_fbserver() string {
 	// char* from pbs_fbserver is statically allocated, so can't be freed
 	return C.GoString(C.pbs_fbserver())
 }
+*/
 
+/*
 func Pbs_get_server_list() string {
 	// char* from pbs_get_server_list is statically allocated, so can't be freed
 	return C.GoString(C.pbs_get_server_list())
 }
+*/
 
 func Pbs_geterrmsg(handle int) string {
 	s := C.pbs_geterrmsg(C.int(handle))
@@ -361,6 +367,7 @@ func Pbs_geterrmsg(handle int) string {
 	return C.GoString(s)
 }
 
+/*
 func Pbs_gpumode(handle int, mom_node string, gpu_id string, gpu_mode int) error {
 	m := C.CString(mom_node)
 	defer C.free(unsafe.Pointer(m))
@@ -374,6 +381,7 @@ func Pbs_gpumode(handle int, mom_node string, gpu_id string, gpu_mode int) error
 	}
 	return nil
 }
+*/
 
 /*
 // pbs_gpureset not declared in pbs_ifl.h for 3.0.0
@@ -445,7 +453,7 @@ func Pbs_selstat(handle int, attribs []Attrib, extend string) ([]BatchStatus, er
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
 
-	batch_status := C.pbs_selstat(C.int(handle), (*C.struct_attropl)(unsafe.Pointer(a)), e)
+	batch_status := C.pbs_selstat(C.int(handle), (*C.struct_attropl)(unsafe.Pointer(a)),a,e)
 
 	// FIXME: nil also indicates no jobs matched selection criteria...
 	if batch_status == nil {
@@ -517,6 +525,7 @@ func cstringArray(strings []string) **C.char {
 	return c
 }
 
+/*
 func Pbs_rescquery(handle int, resources []string) (int, int, int, int, error) {
 	var avail, alloc, reserv, down C.int
 
@@ -530,6 +539,7 @@ func Pbs_rescquery(handle int, resources []string) (int, int, int, int, error) {
 
 	return int(avail), int(alloc), int(reserv), int(down), nil
 }
+*/
 
 func Pbs_rerunjob(handle int, id string, extend string) error {
 	s := C.CString(id)
@@ -546,6 +556,7 @@ func Pbs_rerunjob(handle int, id string, extend string) error {
 	return nil
 }
 
+/*
 func Avail(handle int, resc string) string {
 	r := C.CString(resc)
 	defer C.free(unsafe.Pointer(r))
@@ -555,7 +566,9 @@ func Avail(handle int, resc string) string {
 
 	return C.GoString(c)
 }
+*/
 
+/*
 func Totpool(handle int, update int) (int, error) {
 	ret := int(C.totpool(C.int(handle), C.int(update)))
 	if ret < 0 {
@@ -563,7 +576,9 @@ func Totpool(handle int, update int) (int, error) {
 	}
 	return ret, nil
 }
+*/
 
+/*
 func Usepool(handle int, update int) (int, error) {
 	ret := int(C.usepool(C.int(handle), C.int(update)))
 	if ret < 0 {
@@ -571,6 +586,7 @@ func Usepool(handle int, update int) (int, error) {
 	}
 	return ret, nil
 }
+*/
 
 func Pbs_rlsjob(handle int, id string, holdType Hold, extend string) error {
 	e := C.CString(extend)
@@ -742,9 +758,11 @@ func Pbs_statserver(handle int, attribs []Attrib, extend string) ([]BatchStatus,
 
 	batch_status := C.pbs_statserver(C.int(handle), a, e)
 
-	if batch_status == nil {
-		return nil, errors.New(Pbs_strerror(int(C.pbs_errno)))
-	}
+	/*
+		if batch_status == nil {
+			return nil, errors.New(Pbs_strerror(int(C.pbs_errno)))
+		}
+	*/
 	defer C.pbs_statfree(batch_status)
 
 	batch := get_pbs_batch_status(batch_status)
@@ -754,7 +772,7 @@ func Pbs_statserver(handle int, attribs []Attrib, extend string) ([]BatchStatus,
 
 func Pbs_strerror(errno int) string {
 	// char* from pbs_strerror is statically allocated, so can't be freed
-	return C.GoString(C.pbs_strerror(C.int(errno)))
+	return C.GoString(C.pbse_to_txt(C.int(errno)))
 }
 
 func Pbs_submit(handle int, attribs []Attrib, script string, destination string, extend string) (string, error) {
