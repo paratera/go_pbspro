@@ -42,7 +42,7 @@ func TestQueueStat(t *testing.T) {
 		}
 	}()
 
-	bs, err = Pbs_statque(handle, "workq", nil, "")
+	bs, err := Pbs_statque(handle, "workq", nil, "")
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -64,7 +64,7 @@ func TestJobStat(t *testing.T) {
 		}
 	}()
 
-	bs, err = Pbs_statjob(handle, "1045", nil, "")
+	bs, err := Pbs_statjob(handle, "1045", nil, "")
 	if err != nil {
 		fmt.Println(err.Error())
 	}
