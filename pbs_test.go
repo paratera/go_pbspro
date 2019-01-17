@@ -1,4 +1,4 @@
-package pbs
+package pbspro
 
 import (
 	"os"
@@ -243,8 +243,8 @@ func TestRescquery(t *testing.T) {
 		}
 	}()
 
-    {
-        avail, alloc, reserv, down, err := Pbs_rescquery(handle, []string{"nodes"})
+	{
+		avail, alloc, reserv, down, err := Pbs_rescquery(handle, []string{"nodes"})
 		if err != nil {
 			t.Errorf("Pbs_rescquery failed: %s\n", err)
 		}
@@ -252,7 +252,7 @@ func TestRescquery(t *testing.T) {
 		t.Logf("Allocated nodes: %d\n", alloc)
 		t.Logf("Reserved nodes: %d\n", reserv)
 		t.Logf("Down nodes: %d\n", down)
-    }
+	}
 }
 
 func TestSelstat(t *testing.T) {
@@ -268,17 +268,17 @@ func TestSelstat(t *testing.T) {
 		}
 	}()
 
-    {
-        attribs, err := Pbs_selstat(handle, nil, "")
-        if err != nil {
-            t.Errorf("Couldn't get job statistics: %s\n", err)
-        }
+	{
+		attribs, err := Pbs_selstat(handle, nil, "")
+		if err != nil {
+			t.Errorf("Couldn't get job statistics: %s\n", err)
+		}
 
-        for _, server := range attribs {
-            t.Logf("%s (%s)\n", server.Name, server.Text)
-            for _, attr := range server.Attributes {
-                logAttribute(t, attr)
-            }
-        }
-    }
+		for _, server := range attribs {
+			t.Logf("%s (%s)\n", server.Name, server.Text)
+			for _, attr := range server.Attributes {
+				logAttribute(t, attr)
+			}
+		}
+	}
 }
