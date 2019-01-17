@@ -7,7 +7,7 @@ import (
 	"github.com/taylor840326/go_pbspro/utils"
 )
 
-func TestQueryJobStat(t *testing.T) {
+func TestServerStat(t *testing.T) {
 	handle, err := utils.Pbs_connect("172.18.7.10")
 	if err != nil {
 		t.Error(err)
@@ -29,7 +29,7 @@ func TestQueryJobStat(t *testing.T) {
 
 }
 
-func TestQueryJobStat(t *testing.T) {
+func TestQueueStat(t *testing.T) {
 	handle, err := utils.Pbs_connect("172.18.7.10")
 	if err != nil {
 		t.Error(err)
@@ -51,7 +51,7 @@ func TestQueryJobStat(t *testing.T) {
 
 }
 
-func TestQueryJobStat(t *testing.T) {
+func TestJobStat(t *testing.T) {
 	handle, err := utils.Pbs_connect("172.18.7.10")
 	if err != nil {
 		t.Error(err)
