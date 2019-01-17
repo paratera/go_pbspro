@@ -67,8 +67,8 @@ func Pbs_statjob(handle int, id string, attribs []utils.Attrib, extend string) (
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
 
-	a := utils.attrib2attribl(attribs)
-	defer utils.freeattribl(a)
+	a := utils.Pbs_attrib2attribl(attribs)
+	defer utils.Pbs_freeattribl(a)
 
 	batch_status := C.pbs_statjob(C.int(handle), i, a, e)
 
@@ -86,8 +86,8 @@ func Pbs_statnode(handle int, id string, attribs []utils.Attrib, extend string) 
 	i := C.CString(id)
 	defer C.free(unsafe.Pointer(i))
 
-	a := utils.attrib2attribl(attribs)
-	defer utils.freeattribl(a)
+	a := utils.Pbs_attrib2attribl(attribs)
+	defer utils.Pbs_freeattribl(a)
 
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
@@ -108,8 +108,8 @@ func Pbs_statque(handle int, id string, attribs []utils.Attrib, extend string) (
 	i := C.CString(id)
 	defer C.free(unsafe.Pointer(i))
 
-	a := utils.attrib2attribl(attribs)
-	defer utils.freeattribl(a)
+	a := utils.Pbs_attrib2attribl(attribs)
+	defer utils.Pbs_freeattribl(a)
 
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
@@ -127,8 +127,8 @@ func Pbs_statque(handle int, id string, attribs []utils.Attrib, extend string) (
 }
 
 func Pbs_statserver(handle int, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
-	a := utils.attrib2attribl(attribs)
-	defer utils.freeattribl(a)
+	a := utils.Pbs_attrib2attribl(attribs)
+	defer utils.Pbs_freeattribl(a)
 
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
@@ -148,8 +148,8 @@ func Pbs_statserver(handle int, attribs []utils.Attrib, extend string) ([]utils.
 }
 
 func Pbs_selstat(handle int, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
-	a := utils.attrib2attribl(attribs)
-	defer utils.freeattribl(a)
+	a := utils.Pbs_attrib2attribl(attribs)
+	defer utils.Pbs_freeattribl(a)
 
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
