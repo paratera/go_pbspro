@@ -28,6 +28,8 @@ import "C"
 import (
 	"errors"
 	"unsafe"
+
+	"github.com/taylor840326/go_pbspro/utils"
 )
 
 /*
@@ -58,7 +60,7 @@ func Avail(handle int, resc string) string {
 }
 */
 
-func Pbs_statjob(handle int, id string, attribs []Attrib, extend string) ([]BatchStatus, error) {
+func Pbs_statjob(handle int, id string, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
 	i := C.CString(id)
 	defer C.free(unsafe.Pointer(i))
 
@@ -80,7 +82,7 @@ func Pbs_statjob(handle int, id string, attribs []Attrib, extend string) ([]Batc
 	return batch, nil
 }
 
-func Pbs_statnode(handle int, id string, attribs []Attrib, extend string) ([]BatchStatus, error) {
+func Pbs_statnode(handle int, id string, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
 	i := C.CString(id)
 	defer C.free(unsafe.Pointer(i))
 
@@ -102,7 +104,7 @@ func Pbs_statnode(handle int, id string, attribs []Attrib, extend string) ([]Bat
 	return batch, nil
 }
 
-func Pbs_statque(handle int, id string, attribs []Attrib, extend string) ([]BatchStatus, error) {
+func Pbs_statque(handle int, id string, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
 	i := C.CString(id)
 	defer C.free(unsafe.Pointer(i))
 
@@ -124,7 +126,7 @@ func Pbs_statque(handle int, id string, attribs []Attrib, extend string) ([]Batc
 	return batch, nil
 }
 
-func Pbs_statserver(handle int, attribs []Attrib, extend string) ([]BatchStatus, error) {
+func Pbs_statserver(handle int, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
 	a := attrib2attribl(attribs)
 	defer freeattribl(a)
 
@@ -145,7 +147,7 @@ func Pbs_statserver(handle int, attribs []Attrib, extend string) ([]BatchStatus,
 	return batch, nil
 }
 
-func Pbs_selstat(handle int, attribs []Attrib, extend string) ([]BatchStatus, error) {
+func Pbs_selstat(handle int, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
 	a := attrib2attribl(attribs)
 	defer freeattribl(a)
 
@@ -195,21 +197,21 @@ func Pbs_get_server_list() string {
 }
 */
 
-func get_pbs_batch_status(batch_status *_Ctype_struct_batch_status) (batch []BatchStatus) {
+func get_pbs_batch_status(batch_status *_Ctype_struct_batch_status) (batch []utils.BatchStatus) {
 	for batch_status != nil {
-		temp := []Attrib{}
+		temp := []utils.Attrib{}
 		for attr := batch_status.attribs; attr != nil; attr = attr.next {
-			temp = append(temp, Attrib{
+			temp = append(temp, utils.Attrib{
 				Name:     C.GoString(attr.name),
 				Resource: C.GoString(attr.resource),
 				Value:    C.GoString(attr.value),
 			})
 		}
 
-		batch = append(batch, BatchStatus{
-			Name:       C.GoString(batch_status.name),
-			Text:       C.GoString(batch_status.text),
-			Attributes: temp,
+		batch = append(batch, utils.BatchStatus{
+			Name:             C.GoString(batch_status.name),
+			Text:             C.GoString(batch_status.text),
+			utils.Attributes: temp,
 		})
 
 		batch_status = batch_status.next
