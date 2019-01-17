@@ -1,11 +1,5 @@
 package utils
 
-import "C"
-import (
-	"errors"
-	"unsafe"
-)
-
 /*
 #cgo CFLAGS: -g
 #cgo LDFLAGS: -L/opt/pbspro/lib -lpbs
@@ -30,6 +24,11 @@ static void addStringToArray (char **array, char *str, unsigned int offset) {
   array[offset] = str;
 }
 */
+import "C"
+import (
+	"errors"
+	"unsafe"
+)
 
 // BatchStatus represents the batch_status structure
 type BatchStatus struct {

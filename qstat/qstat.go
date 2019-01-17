@@ -1,11 +1,5 @@
 package qstat
 
-import "C"
-import (
-	"errors"
-	"unsafe"
-)
-
 /*
 #cgo CFLAGS: -g
 #cgo LDFLAGS: -L/opt/pbspro/lib -lpbs
@@ -30,6 +24,11 @@ static void addStringToArray (char **array, char *str, unsigned int offset) {
   array[offset] = str;
 }
 */
+import "C"
+import (
+	"errors"
+	"unsafe"
+)
 
 /*
 func Pbs_rescquery(handle int, resources []string) (int, int, int, int, error) {
@@ -46,8 +45,6 @@ func Pbs_rescquery(handle int, resources []string) (int, int, int, int, error) {
 	return int(avail), int(alloc), int(reserv), int(down), nil
 }
 */
-
-
 
 /*
 func Avail(handle int, resc string) string {

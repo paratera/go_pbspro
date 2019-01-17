@@ -1,12 +1,5 @@
 package qmgr
 
-import "C"
-
-import (
-	"errors"
-	"unsafe"
-)
-
 /*
 #cgo CFLAGS: -g
 #cgo LDFLAGS: -L/opt/pbspro/lib -lpbs
@@ -31,6 +24,12 @@ static void addStringToArray (char **array, char *str, unsigned int offset) {
   array[offset] = str;
 }
 */
+import "C"
+
+import (
+	"errors"
+	"unsafe"
+)
 
 func Pbs_alterjob(handle int, id string, attribs []Attrib, extend string) error {
 	e := C.CString(extend)
