@@ -209,9 +209,9 @@ func get_pbs_batch_status(batch_status *_Ctype_struct_batch_status) (batch []uti
 		}
 
 		batch = append(batch, utils.BatchStatus{
-			Name:             C.GoString(batch_status.name),
-			Text:             C.GoString(batch_status.text),
-			utils.Attributes: temp,
+			Name:       C.GoString(batch_status.name),
+			Text:       C.GoString(batch_status.text),
+			Attributes: temp,
 		})
 
 		batch_status = batch_status.next
