@@ -20,6 +20,20 @@ func TestQueryJobStat(t *testing.T) {
 		}
 	}()
 
+	bs, err := Pbs_statserver(handle, "pm01", nil, "")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	//Print Server State Informations.
+	fmt.Println(bs)
+
+	bs, err = Pbs_statque(handle, "workq", nil, "")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	//Print Queue State Informations.
+	fmt.Println(bs)
+
 	bs, err := Pbs_statjob(handle, "1045", nil, "")
 	if err != nil {
 		fmt.Println(err.Error())
