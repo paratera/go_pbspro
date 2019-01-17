@@ -22,7 +22,7 @@ func TestQueryJobStat(t *testing.T) {
 
 	bs, err := Pbs_statjob(handle, "1045", nil, "")
 	if err != nil {
-		t.Error(err)
+		fmt.Println(err.Error())
 	}
 
 	//Print Job State Informations.
