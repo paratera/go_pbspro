@@ -1,6 +1,7 @@
 package qmgr
 
 import "C"
+
 import (
 	"errors"
 	"unsafe"
@@ -334,4 +335,17 @@ func Pbs_terminate(handle int, manner Manner, extend string) error {
 	return nil
 }
 
+func Pbs_rerunjob(handle int, id string, extend string) error {
+	s := C.CString(id)
+	defer C.free(unsafe.Pointer(s))
 
+	e := C.CString(extend)
+	defer C.free(unsafe.Pointer(e))
+
+	ret := C.pbs_rerunjob(C.int(handle), s, e)
+
+	if ret != 0 {
+		return errors.New(Pbs_strerror(int(C.pbs_errno)))
+	}
+	return nil
+}

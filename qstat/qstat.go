@@ -47,20 +47,7 @@ func Pbs_rescquery(handle int, resources []string) (int, int, int, int, error) {
 }
 */
 
-func Pbs_rerunjob(handle int, id string, extend string) error {
-	s := C.CString(id)
-	defer C.free(unsafe.Pointer(s))
 
-	e := C.CString(extend)
-	defer C.free(unsafe.Pointer(e))
-
-	ret := C.pbs_rerunjob(C.int(handle), s, e)
-
-	if ret != 0 {
-		return errors.New(Pbs_strerror(int(C.pbs_errno)))
-	}
-	return nil
-}
 
 /*
 func Avail(handle int, resc string) string {
