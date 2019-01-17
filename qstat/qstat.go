@@ -41,7 +41,7 @@ func Pbs_rescquery(handle int, resources []string) (int, int, int, int, error) {
 
 	ret := C.pbs_rescquery(C.int(handle), rl, C.int(len(resources)), &avail, &alloc, &reserv, &down)
 	if ret != 0 {
-		return 0, 0, 0, 0, errors.New(Pbs_strerror(int(C.pbs_errno)))
+		return 0, 0, 0, 0, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
 
 	return int(avail), int(alloc), int(reserv), int(down), nil
@@ -67,13 +67,13 @@ func Pbs_statjob(handle int, id string, attribs []utils.Attrib, extend string) (
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
 
-	a := attrib2attribl(attribs)
-	defer freeattribl(a)
+	a := utils.attrib2attribl(attribs)
+	defer utils.freeattribl(a)
 
 	batch_status := C.pbs_statjob(C.int(handle), i, a, e)
 
 	if batch_status == nil {
-		return nil, errors.New(Pbs_strerror(int(C.pbs_errno)))
+		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
 	defer C.pbs_statfree(batch_status)
 
@@ -86,8 +86,8 @@ func Pbs_statnode(handle int, id string, attribs []utils.Attrib, extend string) 
 	i := C.CString(id)
 	defer C.free(unsafe.Pointer(i))
 
-	a := attrib2attribl(attribs)
-	defer freeattribl(a)
+	a := utils.attrib2attribl(attribs)
+	defer utils.freeattribl(a)
 
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
@@ -95,7 +95,7 @@ func Pbs_statnode(handle int, id string, attribs []utils.Attrib, extend string) 
 	batch_status := C.pbs_statnode(C.int(handle), i, a, e)
 
 	if batch_status == nil {
-		return nil, errors.New(Pbs_strerror(int(C.pbs_errno)))
+		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
 	defer C.pbs_statfree(batch_status)
 
@@ -108,8 +108,8 @@ func Pbs_statque(handle int, id string, attribs []utils.Attrib, extend string) (
 	i := C.CString(id)
 	defer C.free(unsafe.Pointer(i))
 
-	a := attrib2attribl(attribs)
-	defer freeattribl(a)
+	a := utils.attrib2attribl(attribs)
+	defer utils.freeattribl(a)
 
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
@@ -117,7 +117,7 @@ func Pbs_statque(handle int, id string, attribs []utils.Attrib, extend string) (
 	batch_status := C.pbs_statque(C.int(handle), i, a, e)
 
 	if batch_status == nil {
-		return nil, errors.New(Pbs_strerror(int(C.pbs_errno)))
+		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
 	defer C.pbs_statfree(batch_status)
 
@@ -127,8 +127,8 @@ func Pbs_statque(handle int, id string, attribs []utils.Attrib, extend string) (
 }
 
 func Pbs_statserver(handle int, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
-	a := attrib2attribl(attribs)
-	defer freeattribl(a)
+	a := utils.attrib2attribl(attribs)
+	defer utils.freeattribl(a)
 
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
@@ -137,7 +137,7 @@ func Pbs_statserver(handle int, attribs []utils.Attrib, extend string) ([]utils.
 
 	/*
 		if batch_status == nil {
-			return nil, errors.New(Pbs_strerror(int(C.pbs_errno)))
+			return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 		}
 	*/
 	defer C.pbs_statfree(batch_status)
@@ -148,8 +148,8 @@ func Pbs_statserver(handle int, attribs []utils.Attrib, extend string) ([]utils.
 }
 
 func Pbs_selstat(handle int, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
-	a := attrib2attribl(attribs)
-	defer freeattribl(a)
+	a := utils.attrib2attribl(attribs)
+	defer utils.freeattribl(a)
 
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
@@ -158,7 +158,7 @@ func Pbs_selstat(handle int, attribs []utils.Attrib, extend string) ([]utils.Bat
 
 	// FIXME: nil also indicates no jobs matched selection criteria...
 	if batch_status == nil {
-		return nil, errors.New(Pbs_strerror(int(C.pbs_errno)))
+		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
 	defer C.pbs_statfree(batch_status)
 	batch := get_pbs_batch_status(batch_status)
@@ -166,7 +166,7 @@ func Pbs_selstat(handle int, attribs []utils.Attrib, extend string) ([]utils.Bat
 	return batch, nil
 }
 
-func Pbs_msgjob(handle int, id string, file MessageStream, message string, extend string) error {
+func Pbs_msgjob(handle int, id string, file utils.MessageStream, message string, extend string) error {
 	s := C.CString(id)
 	defer C.free(unsafe.Pointer(s))
 
@@ -178,7 +178,7 @@ func Pbs_msgjob(handle int, id string, file MessageStream, message string, exten
 
 	ret := C.pbs_msgjob(C.int(handle), s, C.int(file), m, e)
 	if ret != 0 {
-		return errors.New(Pbs_strerror(int(C.pbs_errno)))
+		return errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
 	return nil
 }
@@ -223,7 +223,7 @@ func get_pbs_batch_status(batch_status *_Ctype_struct_batch_status) (batch []uti
 func Totpool(handle int, update int) (int, error) {
 	ret := int(C.totpool(C.int(handle), C.int(update)))
 	if ret < 0 {
-		return ret, errors.New(Pbs_strerror(int(C.pbs_errno)))
+		return ret, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
 	return ret, nil
 }
