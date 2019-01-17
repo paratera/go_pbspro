@@ -32,7 +32,7 @@ import (
 	"github.com/taylor840326/go_pbspro/utils"
 )
 
-func Pbs_attrib2attribl(attribs []Attrib) *C.struct_attrl {
+func Pbs_attrib2attribl(attribs []utils.Attrib) *C.struct_attrl {
 	// Empty array returns null pointer
 	if len(attribs) == 0 {
 		return nil
