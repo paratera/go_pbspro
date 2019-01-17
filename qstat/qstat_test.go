@@ -20,7 +20,7 @@ func TestQueryJobStat(t *testing.T) {
 		}
 	}()
 
-	bs, err := Pbs_statserver(handle, "pm01", nil, "")
+	bs, err := Pbs_statserver(handle, nil, "")
 	if err != nil {
 		fmt.Println(err.Error())
 	}
