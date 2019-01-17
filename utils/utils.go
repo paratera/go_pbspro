@@ -1,5 +1,36 @@
 package utils
 
+import "C"
+import (
+	"errors"
+	"unsafe"
+)
+
+/*
+#cgo CFLAGS: -g
+#cgo LDFLAGS: -L/opt/pbspro/lib -lpbs
+#include <stdlib.h>
+#include "/opt/pbspro/include/pbs_error.h"
+#include "/opt/pbspro/include/pbs_ifl.h"
+
+// I gave up getting the CGO functions for these right, casting was killing me
+static char** mkStringArray (unsigned int len) {
+  return (char **) malloc(sizeof(char *) * len);
+}
+
+static void freeCstringsN (char **array, unsigned int len) {
+    unsigned int i = 0;
+    for (i = 0; i < len; i++) {
+        free(array[i]);
+    }
+    free(array);
+}
+
+static void addStringToArray (char **array, char *str, unsigned int offset) {
+  array[offset] = str;
+}
+*/
+
 // BatchStatus represents the batch_status structure
 type BatchStatus struct {
 	Name       string
@@ -142,3 +173,105 @@ const (
 	//MERGE                          Operator      = C.MERGE
 	//INCR_OLD                       Operator      = C.INCR_OLD
 )
+
+// Pbs_default reports the default torque server
+func Pbs_default() string {
+	// char* from pbs_default is statically allocated, so can't be freed
+	return C.GoString(C.pbs_default())
+}
+
+// Pbs_connect makes a connection to server, or if server is an empty string, the default server. The returned handle is used by subsequent calls to the functions in this package to identify the server.
+func Pbs_connect(server string) (int, error) {
+	str := C.CString(server)
+	defer C.free(unsafe.Pointer(str))
+
+	handle := C.pbs_connect(str)
+	if handle < 0 {
+		return 0, errors.New(Pbs_strerror(int(C.pbs_errno)))
+	}
+
+	return int(handle), nil
+}
+
+func Pbs_disconnect(handle int) error {
+	ret := C.pbs_disconnect(C.int(handle))
+	if ret != 0 {
+		return errors.New(Pbs_strerror(int(C.pbs_errno)))
+	}
+	return nil
+}
+
+func sptr(p uintptr) *C.char {
+	return *(**C.char)(unsafe.Pointer(p))
+}
+
+func cstrings(x **C.char) []string {
+	var s []string
+	for p := uintptr(unsafe.Pointer(x)); sptr(p) != nil; p += unsafe.Sizeof(uintptr(0)) {
+		s = append(s, C.GoString(sptr(p)))
+	}
+	return s
+}
+
+func freeCstrings(x **C.char) {
+	for p := uintptr(unsafe.Pointer(x)); sptr(p) != nil; p += unsafe.Sizeof(uintptr(0)) {
+		C.free(unsafe.Pointer(sptr(p)))
+	}
+}
+
+func getLastError() error {
+	return errors.New(Pbs_strerror(int(C.pbs_errno)))
+}
+
+func Pbs_geterrmsg(handle int) string {
+	s := C.pbs_geterrmsg(C.int(handle))
+	// char* from pbs_geterrmsg is statically allocated, so can't be freed
+	return C.GoString(s)
+}
+
+func Pbs_strerror(errno int) string {
+	// char* from pbs_strerror is statically allocated, so can't be freed
+	return C.GoString(C.pbse_to_txt(C.int(errno)))
+}
+
+func cstringArray(strings []string) **C.char {
+	c := C.mkStringArray(C.uint(len(strings)))
+	for i, str := range strings {
+		C.addStringToArray(c, C.CString(str), C.uint(i))
+	}
+	return c
+}
+
+func attrib2attribl(attribs []Attrib) *C.struct_attrl {
+	// Empty array returns null pointer
+	if len(attribs) == 0 {
+		return nil
+	}
+
+	first := &C.struct_attrl{
+		value:    C.CString(attribs[0].Value),
+		resource: C.CString(attribs[0].Resource),
+		name:     C.CString(attribs[0].Name),
+		op:       uint32(attribs[0].Op),
+	}
+	tail := first
+
+	for _, attr := range attribs[1:len(attribs)] {
+		tail.next = &C.struct_attrl{
+			value:    C.CString(attr.Value),
+			resource: C.CString(attr.Resource),
+			name:     C.CString(attr.Name),
+			op:       uint32(attribs[0].Op),
+		}
+	}
+
+	return first
+}
+
+func freeattribl(attrl *C.struct_attrl) {
+	for p := attrl; p != nil; p = p.next {
+		C.free(unsafe.Pointer(p.name))
+		C.free(unsafe.Pointer(p.value))
+		C.free(unsafe.Pointer(p.resource))
+	}
+}
