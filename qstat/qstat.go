@@ -70,7 +70,7 @@ func Pbs_statjob(handle int, id string, attribs []utils.Attrib, extend string) (
 	a := utils.Pbs_attrib2attribl(attribs)
 	defer utils.Pbs_freeattribl(a)
 
-	batch_status := (*utils._Ctype_struct_attrl)C.pbs_statjob(C.int(handle), i, a, e)
+	batch_status := C.pbs_statjob(C.int(handle), i, a, e)
 
 	if batch_status == nil {
 		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
@@ -92,7 +92,7 @@ func Pbs_statnode(handle int, id string, attribs []utils.Attrib, extend string) 
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
 
-	batch_status := (*utils._Ctype_struct_attrl)C.pbs_statnode(C.int(handle), i, a, e)
+	batch_status := C.pbs_statnode(C.int(handle), i, a, e)
 
 	if batch_status == nil {
 		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
@@ -114,7 +114,7 @@ func Pbs_statque(handle int, id string, attribs []utils.Attrib, extend string) (
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
 
-	batch_status := (*utils._Ctype_struct_attrl)C.pbs_statque(C.int(handle), i, a, e)
+	batch_status := C.pbs_statque(C.int(handle), i, a, e)
 
 	if batch_status == nil {
 		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
@@ -133,7 +133,7 @@ func Pbs_statserver(handle int, attribs []utils.Attrib, extend string) ([]utils.
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
 
-	batch_status := (*utils._Ctype_struct_attrl)C.pbs_statserver(C.int(handle), a, e)
+	batch_status := C.pbs_statserver(C.int(handle), a, e)
 
 	/*
 		if batch_status == nil {
@@ -154,7 +154,7 @@ func Pbs_selstat(handle int, attribs []utils.Attrib, extend string) ([]utils.Bat
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
 
-	batch_status := (*utils._Ctype_struct_attrl)C.pbs_selstat(C.int(handle), (*C.struct_attropl)(unsafe.Pointer(a)), a, e)
+	batch_status := C.pbs_selstat(C.int(handle), (*C.struct_attropl)(unsafe.Pointer(a)), a, e)
 
 	// FIXME: nil also indicates no jobs matched selection criteria...
 	if batch_status == nil {
