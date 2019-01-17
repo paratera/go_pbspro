@@ -34,7 +34,7 @@ func TestQueryJobStat(t *testing.T) {
 	//Print Queue State Informations.
 	fmt.Println(bs)
 
-	bs, err := Pbs_statjob(handle, "1045", nil, "")
+	bs, err = Pbs_statjob(handle, "1045", nil, "")
 	if err != nil {
 		fmt.Println(err.Error())
 	}
