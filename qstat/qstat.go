@@ -70,7 +70,7 @@ func Pbs_statjob(handle int, id string, attribs []utils.Attrib, extend string) (
 	a := utils.Pbs_attrib2attribl(attribs)
 	defer utils.Pbs_freeattribl(a)
 
-	batch_status := C.pbs_statjob(C.int(handle), i, &C.struct_attrl(*a), e)
+	batch_status := C.pbs_statjob(C.int(handle), i, C.struct_attrl(a), e)
 
 	if batch_status == nil {
 		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
