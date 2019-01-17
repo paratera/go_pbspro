@@ -241,36 +241,3 @@ func cstringArray(strings []string) **C.char {
 	return c
 }
 
-func Pbs_attrib2attribl(attribs []Attrib) *C.struct_attrl {
-	// Empty array returns null pointer
-	if len(attribs) == 0 {
-		return nil
-	}
-
-	first := &C.struct_attrl{
-		value:    C.CString(attribs[0].Value),
-		resource: C.CString(attribs[0].Resource),
-		name:     C.CString(attribs[0].Name),
-		op:       uint32(attribs[0].Op),
-	}
-	tail := first
-
-	for _, attr := range attribs[1:len(attribs)] {
-		tail.next = &C.struct_attrl{
-			value:    C.CString(attr.Value),
-			resource: C.CString(attr.Resource),
-			name:     C.CString(attr.Name),
-			op:       uint32(attribs[0].Op),
-		}
-	}
-
-	return first
-}
-
-func Pbs_freeattribl(attrl *C.struct_attrl) {
-	for p := attrl; p != nil; p = p.next {
-		C.free(unsafe.Pointer(p.name))
-		C.free(unsafe.Pointer(p.value))
-		C.free(unsafe.Pointer(p.resource))
-	}
-}
