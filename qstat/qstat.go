@@ -254,6 +254,8 @@ func get_pbs_batch_status(batch_status *_Ctype_struct_batch_status) (batch []uti
 }
 
 /*
+Desc: return total number of nodes
+*/
 func Totpool(handle int, update int) (int, error) {
 	ret := int(C.totpool(C.int(handle), C.int(update)))
 	if ret < 0 {
@@ -261,4 +263,3 @@ func Totpool(handle int, update int) (int, error) {
 	}
 	return ret, nil
 }
-*/
