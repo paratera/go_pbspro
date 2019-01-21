@@ -3,8 +3,6 @@ package qstat
 import (
 	"fmt"
 	"testing"
-
-	"github.com/taylor840326/go_pbspro/utils"
 )
 
 func TestServerStat(t *testing.T) {
@@ -14,8 +12,8 @@ func TestServerStat(t *testing.T) {
 		t.Error(err)
 	}
 
-	qstat.Attribs = nil
-	qstat.Extend = ""
+	qstat.SetAttribs(nil)
+	qstat.SetExtend("")
 
 	err = qstat.ConnectPBS()
 	if err != nil {
@@ -38,63 +36,84 @@ func TestServerStat(t *testing.T) {
 }
 
 func TestNodeStat(t *testing.T) {
-	handle, err := utils.Pbs_connect("172.18.7.10")
+	qstat, err := NewQstat("172.18.7.10")
 	if err != nil {
 		t.Error(err)
 	}
 
-	defer func() {
-		err = utils.Pbs_disconnect(handle)
-		if err != nil {
-			t.Error(err)
-		}
-	}()
+	qstat.SetId("pc01")
+	qstat.SetAttribs(nil)
+	qstat.SetExtend("")
 
-	bs, err := Pbs_statnode(handle, "pc01", nil, "")
+	err = qstat.ConnectPBS()
+	if err != nil {
+		fmt.Println("ConnectPBS Error")
+		t.Error(err)
+	}
+
+	bs, err := qstat.Pbs_statnode()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 	//Print Server State Informations.
 	fmt.Println(bs)
 
+	err = qstat.DisconnectPBS()
+	if err != nil {
+		fmt.Println("DisconnectPBS Error")
+		t.Error(err)
+	}
+
 }
 
 func TestQueueStat(t *testing.T) {
-	handle, err := utils.Pbs_connect("172.18.7.10")
+	qstat, err := NewQstat("172.18.7.10")
 	if err != nil {
 		t.Error(err)
 	}
 
-	defer func() {
-		err = utils.Pbs_disconnect(handle)
-		if err != nil {
-			t.Error(err)
-		}
-	}()
+	qstat.SetId("workq")
+	qstat.SetAttribs(nil)
+	qstat.SetExtend("")
 
-	bs, err := Pbs_statque(handle, "workq", nil, "")
+	err = qstat.ConnectPBS()
+	if err != nil {
+		fmt.Println("ConnectPBS Error")
+		t.Error(err)
+	}
+
+	bs, err := qstat.Pbs_statque()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 	//Print Queue State Informations.
 	fmt.Println(bs)
 
+	err = qstat.DisconnectPBS()
+	if err != nil {
+		fmt.Println("DisconnectPBS Error")
+		t.Error(err)
+	}
+
 }
 
 func TestJobStat(t *testing.T) {
-	handle, err := utils.Pbs_connect("172.18.7.10")
+	qstat, err := NewQstat("172.18.7.10")
 	if err != nil {
 		t.Error(err)
 	}
 
-	defer func() {
-		err = utils.Pbs_disconnect(handle)
-		if err != nil {
-			t.Error(err)
-		}
-	}()
+	qstat.SetId("1045")
+	qstat.SetAttribs(nil)
+	qstat.SetExtend("")
 
-	bs, err := Pbs_statjob(handle, "1045", nil, "")
+	err = qstat.ConnectPBS()
+	if err != nil {
+		fmt.Println("ConnectPBS Error")
+		t.Error(err)
+	}
+
+	bs, err := qstat.Pbs_statjob()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
