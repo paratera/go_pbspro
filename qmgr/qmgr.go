@@ -12,6 +12,8 @@ import "C"
 import (
 	"errors"
 	"unsafe"
+
+	"github.com/taylor840326/go_pbspro/utils"
 )
 
 func Pbs_alterjob(handle int, id string, attribs []Attrib, extend string) error {
@@ -328,6 +330,23 @@ func Pbs_rerunjob(handle int, id string, extend string) error {
 
 	if ret != 0 {
 		return errors.New(Pbs_strerror(int(C.pbs_errno)))
+	}
+	return nil
+}
+
+func Pbs_msgjob(handle int, id string, file utils.MessageStream, message string, extend string) error {
+	s := C.CString(id)
+	defer C.free(unsafe.Pointer(s))
+
+	e := C.CString(extend)
+	defer C.free(unsafe.Pointer(e))
+
+	m := C.CString(message)
+	defer C.free(unsafe.Pointer(m))
+
+	ret := C.pbs_msgjob(C.int(handle), s, C.int(file), m, e)
+	if ret != 0 {
+		return errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
 	return nil
 }

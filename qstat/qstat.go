@@ -25,6 +25,7 @@ type (
 		IsClosed      bool           `json:"is_closed"`
 		Attribs       []utils.Attrib `json:"attribs"`
 		Extend        string         `json:"extend"`
+		Id            string         `json:"id"`
 	}
 )
 
@@ -38,6 +39,7 @@ func NewQstat(server string) (qs *Qstat, err error) {
 	qstat.IsClosed = false
 	qstat.Attribs = nil
 	qstat.Extend = ""
+	qstat.Id = ""
 
 	return qstat, nil
 }
@@ -60,6 +62,11 @@ func (qs *Qstat) SetAttribs(attribs []utils.Attrib) {
 //设定扩展信息列表.
 func (qs *Qstat) SetExtend(extend string) {
 	qs.Extend = extend
+}
+
+//设定Id值
+func (qs *Qstat) SetId(id string) {
+	qs.Id = id
 }
 
 //创建一个新的连接
@@ -116,17 +123,18 @@ func Pbs_freeattribl(attrl *C.struct_attrl) {
 	}
 }
 
-func Pbs_statjob(handle int, id string, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
-	i := C.CString(id)
+//查询指定作业的信息
+func (qs *Qstat) Pbs_statjob() ([]utils.BatchStatus, error) {
+	i := C.CString(qs.Id)
 	defer C.free(unsafe.Pointer(i))
 
-	e := C.CString(extend)
+	e := C.CString(qs.Extend)
 	defer C.free(unsafe.Pointer(e))
 
-	a := Pbs_attrib2attribl(attribs)
+	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
 
-	batch_status := C.pbs_statjob(C.int(handle), i, a, e)
+	batch_status := C.pbs_statjob(C.int(qs.Handle), i, a, e)
 
 	if batch_status == nil {
 		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
@@ -138,17 +146,18 @@ func Pbs_statjob(handle int, id string, attribs []utils.Attrib, extend string) (
 	return batch, nil
 }
 
-func Pbs_statnode(handle int, id string, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
-	i := C.CString(id)
+//查询指定节点状态
+func (qs *Qstat) Pbs_statnode() ([]utils.BatchStatus, error) {
+	i := C.CString(qs.Id)
 	defer C.free(unsafe.Pointer(i))
 
-	a := Pbs_attrib2attribl(attribs)
+	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
 
-	e := C.CString(extend)
+	e := C.CString(qs.Extend)
 	defer C.free(unsafe.Pointer(e))
 
-	batch_status := C.pbs_statnode(C.int(handle), i, a, e)
+	batch_status := C.pbs_statnode(C.int(qs.Handle), i, a, e)
 
 	if batch_status == nil {
 		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
@@ -160,17 +169,18 @@ func Pbs_statnode(handle int, id string, attribs []utils.Attrib, extend string) 
 	return batch, nil
 }
 
-func Pbs_statque(handle int, id string, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
-	i := C.CString(id)
+//查询指定队列信息
+func (qs *Qstat) Pbs_statque() ([]utils.BatchStatus, error) {
+	i := C.CString(qs.Id)
 	defer C.free(unsafe.Pointer(i))
 
-	a := Pbs_attrib2attribl(attribs)
+	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
 
-	e := C.CString(extend)
+	e := C.CString(qs.Extend)
 	defer C.free(unsafe.Pointer(e))
 
-	batch_status := C.pbs_statque(C.int(handle), i, a, e)
+	batch_status := C.pbs_statque(C.int(qs.Handle), i, a, e)
 
 	if batch_status == nil {
 		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
@@ -182,14 +192,15 @@ func Pbs_statque(handle int, id string, attribs []utils.Attrib, extend string) (
 	return batch, nil
 }
 
-func (qstat *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
-	a := Pbs_attrib2attribl(qstat.Attribs)
+//查询服务信息
+func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
+	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
 
-	e := C.CString(qstat.Extend)
+	e := C.CString(qs.Extend)
 	defer C.free(unsafe.Pointer(e))
 
-	batch_status := C.pbs_statserver(C.int(qstat.Handle), a, e)
+	batch_status := C.pbs_statserver(C.int(qs.Handle), a, e)
 
 	if batch_status == nil {
 		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
@@ -201,14 +212,15 @@ func (qstat *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 	return batch, nil
 }
 
-func Pbs_selstat(handle int, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
-	a := Pbs_attrib2attribl(attribs)
+//返回JOBID列表
+func (qs *Qstat) Pbs_selstat() ([]utils.BatchStatus, error) {
+	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
 
-	e := C.CString(extend)
+	e := C.CString(qs.Extend)
 	defer C.free(unsafe.Pointer(e))
 
-	batch_status := C.pbs_selstat(C.int(handle), (*C.struct_attropl)(unsafe.Pointer(a)), a, e)
+	batch_status := C.pbs_selstat(C.int(qs.Handle), (*C.struct_attropl)(unsafe.Pointer(a)), a, e)
 
 	// FIXME: nil also indicates no jobs matched selection criteria...
 	if batch_status == nil {
@@ -220,23 +232,7 @@ func Pbs_selstat(handle int, attribs []utils.Attrib, extend string) ([]utils.Bat
 	return batch, nil
 }
 
-func Pbs_msgjob(handle int, id string, file utils.MessageStream, message string, extend string) error {
-	s := C.CString(id)
-	defer C.free(unsafe.Pointer(s))
-
-	e := C.CString(extend)
-	defer C.free(unsafe.Pointer(e))
-
-	m := C.CString(message)
-	defer C.free(unsafe.Pointer(m))
-
-	ret := C.pbs_msgjob(C.int(handle), s, C.int(file), m, e)
-	if ret != 0 {
-		return errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
-	}
-	return nil
-}
-
+//获取信息
 func get_pbs_batch_status(batch_status *_Ctype_struct_batch_status) (batch []utils.BatchStatus) {
 
 	for batch_status != nil {
