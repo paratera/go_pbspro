@@ -66,34 +66,6 @@ func Pbs_freeattribl(attrl *C.struct_attrl) {
 	}
 }
 
-/*
-func Pbs_rescquery(handle int, resources []string) (int, int, int, int, error) {
-	var avail, alloc, reserv, down C.int
-
-	rl := cstringArray(resources)
-	defer C.freeCstringsN(rl, C.uint(len(resources)))
-
-	ret := C.pbs_rescquery(C.int(handle), rl, C.int(len(resources)), &avail, &alloc, &reserv, &down)
-	if ret != 0 {
-		return 0, 0, 0, 0, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
-	}
-
-	return int(avail), int(alloc), int(reserv), int(down), nil
-}
-*/
-
-/*
-func Avail(handle int, resc string) string {
-	r := C.CString(resc)
-	defer C.free(unsafe.Pointer(r))
-
-	c := C.avail(C.int(handle), r)
-	//defer C.free(unsafe.Pointer(c))
-
-	return C.GoString(c)
-}
-*/
-
 func Pbs_statjob(handle int, id string, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
 	i := C.CString(id)
 	defer C.free(unsafe.Pointer(i))
