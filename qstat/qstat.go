@@ -217,20 +217,6 @@ func Pbs_msgjob(handle int, id string, file utils.MessageStream, message string,
 	return nil
 }
 
-/*
-func Pbs_fbserver() string {
-	// char* from pbs_fbserver is statically allocated, so can't be freed
-	return C.GoString(C.pbs_fbserver())
-}
-*/
-
-/*
-func Pbs_get_server_list() string {
-	// char* from pbs_get_server_list is statically allocated, so can't be freed
-	return C.GoString(C.pbs_get_server_list())
-}
-*/
-
 func get_pbs_batch_status(batch_status *_Ctype_struct_batch_status) (batch []utils.BatchStatus) {
 	for batch_status != nil {
 		temp := []utils.Attrib{}
