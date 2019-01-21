@@ -9,7 +9,7 @@ package qstat
 */
 import "C"
 import (
-	"errors"
+	"github.com/juju/errors"
 	"unsafe"
 
 	"github.com/taylor840326/go_pbspro/utils"
@@ -26,16 +26,17 @@ type (
 )
 
 //新建一个Qstat实例
-func NewQstat(server string)(qstat *Qstat,error){
-	qstat := new(Qstat)
-
+func NewQstat(server string)(qs *Qstat,err error){
+    qstat := new(Qstat)
 	qstat.Server = server
+
 	return qstat,nil
 }
 
 //创建一个新的连接
-func (qstat *Qstat)ConnectPBS()error{
-	qstat.Handle,err := utils.Pbs_connect(qstat.Server)
+func (qs *Qstat)ConnectPBS()error{
+    var err error
+    qs.Handle,err = utils.Pbs_connect(qs.Server)
 	if err !=nil{
 		return errors.NewBadRequest(err,"Cann't connect PBSpro Server")
 	}
@@ -44,8 +45,8 @@ func (qstat *Qstat)ConnectPBS()error{
 }
 
 //断开连接
-func (qstat *Qstat)DisconnectPBS()error{
-	err = utils.Pbs_disconnect(qstat.Handle)
+func (qs *Qstat)DisconnectPBS()error{
+    err := utils.Pbs_disconnect(qs.Handle)
 	if err != nil{
 		return errors.NewBadRequest(err,"Can't disconnect PBSpro Server")
 	}

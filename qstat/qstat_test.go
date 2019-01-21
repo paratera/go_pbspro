@@ -10,11 +10,15 @@ import (
 func TestServerStat(t *testing.T) {
 
 	qstat, err := NewQstat("172.18.7.10")
+    if err != nil{
+        t.Error(err)
+    }
 
 	err = qstat.ConnectPBS()
 	if err != nil {
 		t.Error(err)
 	}
+    fmt.Println(qstat.Server)
 
 	err = qstat.DisconnectPBS()
 	if err != nil {

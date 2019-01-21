@@ -9,6 +9,7 @@ package utils
 */
 import "C"
 import (
+    "fmt"
 	"errors"
 	"unsafe"
 )
@@ -169,10 +170,12 @@ func Pbs_connect(server string) (int, error) {
 	str := C.CString(server)
 	defer C.free(unsafe.Pointer(str))
 
-	handle := C.pbs_connect(str)
+    handle := C.pbs_connect(str)
 	if handle < 0 {
 		return 0, errors.New(Pbs_strerror(int(C.pbs_errno)))
 	}
+
+    fmt.Println("handler=",handle)
 
 	return int(handle), nil
 }
