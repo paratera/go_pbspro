@@ -10,6 +10,7 @@ package qstat
 import "C"
 import (
 	"errors"
+	"fmt"
 	"unsafe"
 
 	"github.com/taylor840326/go_pbspro/utils"
@@ -171,6 +172,7 @@ func Pbs_msgjob(handle int, id string, file utils.MessageStream, message string,
 }
 
 func get_pbs_batch_status(batch_status *_Ctype_struct_batch_status) (batch []utils.BatchStatus) {
+	fmt.Println("get_pbs_batch_status")
 	for batch_status != nil {
 		temp := []utils.Attrib{}
 		for attr := batch_status.attribs; attr != nil; attr = attr.next {
