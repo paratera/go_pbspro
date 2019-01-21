@@ -14,6 +14,9 @@ func TestServerStat(t *testing.T) {
 		t.Error(err)
 	}
 
+	qstat.Attribs = nil
+	qstat.Extend = ""
+
 	err = qstat.ConnectPBS()
 	if err != nil {
 		fmt.Println("ConnectPBS Error")
