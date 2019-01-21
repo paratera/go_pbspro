@@ -156,12 +156,6 @@ type (
 		Text       string
 		Attributes []Attrib
 	}
-
-	PBS struct {
-		Server        string `json:"server"`
-		Handle        int64  `json:"handle"`
-		DefaultServer string `json:"default_server"`
-	}
 )
 
 // Pbs_default reports the default torque server

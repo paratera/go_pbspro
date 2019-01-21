@@ -15,7 +15,42 @@ import (
 	"github.com/taylor840326/go_pbspro/utils"
 )
 
+type (
+	//定义PBS结构体
+	Qstat struct {
+		Server        string `json:"server"`
+		Handle        int  `json:"handle"`
+		DefaultServer string `json:"default_server"`
+		IsClosed      bool   `json:"is_closed"`
+	}
+)
 
+//新建一个Qstat实例
+func NewQstat(server string)(qstat *Qstat,error){
+	qstat := new(Qstat)
+
+	qstat.Server = server
+	return qstat,nil
+}
+
+//创建一个新的连接
+func (qstat *Qstat)ConnectPBS()error{
+	qstat.Handle,err := utils.Pbs_connect(qstat.Server)
+	if err !=nil{
+		return errors.NewBadRequest(err,"Cann't connect PBSpro Server")
+	}
+
+	return nil
+}
+
+//断开连接
+func (qstat *Qstat)DisconnectPBS()error{
+	err = utils.Pbs_disconnect(qstat.Handle)
+	if err != nil{
+		return errors.NewBadRequest(err,"Can't disconnect PBSpro Server")
+	}
+	return nil
+}
 
 func Pbs_attrib2attribl(attribs []utils.Attrib) *C.struct_attrl {
 	// Empty array returns null pointer
@@ -51,7 +86,7 @@ func Pbs_freeattribl(attrl *C.struct_attrl) {
 	}
 }
 
-func Pbs_statjob(handle int, id string, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
+func Pbs_statjob(handle int,id string, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
 	i := C.CString(id)
 	defer C.free(unsafe.Pointer(i))
 
@@ -117,14 +152,14 @@ func Pbs_statque(handle int, id string, attribs []utils.Attrib, extend string) (
 	return batch, nil
 }
 
-func Pbs_statserver(handle int, attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
+func (qstat *Qstat)Pbs_statserver( attribs []utils.Attrib, extend string) ([]utils.BatchStatus, error) {
 	a := Pbs_attrib2attribl(attribs)
 	defer Pbs_freeattribl(a)
 
 	e := C.CString(extend)
 	defer C.free(unsafe.Pointer(e))
 
-	batch_status := C.pbs_statserver(C.int(handle), a, e)
+	batch_status := C.pbs_statserver(C.int(qstat.Handle), a, e)
 
 	if batch_status == nil {
 		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))

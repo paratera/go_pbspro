@@ -8,19 +8,20 @@ import (
 )
 
 func TestServerStat(t *testing.T) {
-	handle, err := utils.Pbs_connect("172.18.7.10")
+
+	qstat, err := NewQstat("172.18.7.10")
+
+	err = qstat.ConnectPBS()
 	if err != nil {
 		t.Error(err)
 	}
 
-	defer func() {
-		err = utils.Pbs_disconnect(handle)
-		if err != nil {
-			t.Error(err)
-		}
-	}()
+	err = qstat.DisconnectPBS()
+	if err != nil {
+		t.Error(err)
+	}
 
-	bs, err := Pbs_statserver(handle, nil, "")
+	bs, err := qstat.Pbs_statserver(nil, "")
 	if err != nil {
 		fmt.Println(err.Error())
 	}
