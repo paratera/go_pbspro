@@ -13,21 +13,6 @@ import (
 	"unsafe"
 )
 
-// BatchStatus represents the batch_status structure
-type BatchStatus struct {
-	Name       string
-	Text       string
-	Attributes []Attrib
-}
-
-// Attrib represents the attrl and attropl structures
-type Attrib struct {
-	Name     string
-	Resource string
-	Value    string
-	Op       Operator
-}
-
 // Manner defines how the server should be terminated
 type Manner int
 
@@ -156,6 +141,29 @@ const (
 	//INCR_OLD                       Operator      = C.INCR_OLD
 )
 
+// Attrib represents the attrl and attropl structures
+type (
+	Attrib struct {
+		Name     string
+		Resource string
+		Value    string
+		Op       Operator
+	}
+
+	// BatchStatus represents the batch_status structure
+	BatchStatus struct {
+		Name       string
+		Text       string
+		Attributes []Attrib
+	}
+
+	PBS struct {
+		Server        string `json:"server"`
+		Handle        int64  `json:"handle"`
+		DefaultServer string `json:"default_server"`
+	}
+)
+
 // Pbs_default reports the default torque server
 func Pbs_default() string {
 	// char* from pbs_default is statically allocated, so can't be freed
@@ -181,24 +189,6 @@ func Pbs_disconnect(handle int) error {
 		return errors.New(Pbs_strerror(int(C.pbs_errno)))
 	}
 	return nil
-}
-
-func sptr(p uintptr) *C.char {
-	return *(**C.char)(unsafe.Pointer(p))
-}
-
-func cstrings(x **C.char) []string {
-	var s []string
-	for p := uintptr(unsafe.Pointer(x)); sptr(p) != nil; p += unsafe.Sizeof(uintptr(0)) {
-		s = append(s, C.GoString(sptr(p)))
-	}
-	return s
-}
-
-func freeCstrings(x **C.char) {
-	for p := uintptr(unsafe.Pointer(x)); sptr(p) != nil; p += unsafe.Sizeof(uintptr(0)) {
-		C.free(unsafe.Pointer(sptr(p)))
-	}
 }
 
 func getLastError() error {
