@@ -169,11 +169,9 @@ func Pbs_statserver(handle int, attribs []utils.Attrib, extend string) ([]utils.
 
 	batch_status := C.pbs_statserver(C.int(handle), a, e)
 
-	/*
-		if batch_status == nil {
-			return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
-		}
-	*/
+	if batch_status == nil {
+		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
+	}
 	defer C.pbs_statfree(batch_status)
 
 	batch := get_pbs_batch_status(batch_status)
