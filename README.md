@@ -59,23 +59,32 @@ A PBSpro Cluster to test.
     )
 
     func main() {
-        handle, err := pbs.Pbs_connect("torque.example.com")
-        if err != nil {
-            log.Fatal("Couldn't connect to server: %s", err)
-        }
-
-        defer func() {
-            err = Pbs_disconnect(handle)
-            if err != nil {
-                log.Fatal("Disconnect failed: %s\n", err)
+                	qstat, err := NewQstat("172.18.7.10")
+        	if err != nil {
+        		t.Error(err)
+        	}
+        
+        	qstat.SetAttribs(nil)
+        	qstat.SetExtend("")
+        
+        	err = qstat.ConnectPBS()
+        	if err != nil {
+        		fmt.Println("ConnectPBS Error")
+        		t.Error(err)
+        	}
+        
+        	bs, err := qstat.Pbs_statserver()
+        	if err != nil {
+        		fmt.Println(err.Error())
+        	}
+        	//Print Server State Informations.
+        	fmt.Println(bs)
+        
+        	err = qstat.DisconnectPBS()
+        	if err != nil {
+        		fmt.Println("DisconnectPBS Error")
+        		t.Error(err)
             }
-        }()
-
-        jobid, err := pbs.Pbs_submit(handle, nil, "test.sh", "")
-        if err != nil {
-            log.Fatal("Job submission failed: %s\n", err)
-        }
-
         // ...
     }
 ```
