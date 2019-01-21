@@ -6,23 +6,6 @@ package qmgr
 #include <stdlib.h>
 #include "/opt/pbspro/include/pbs_error.h"
 #include "/opt/pbspro/include/pbs_ifl.h"
-
-// I gave up getting the CGO functions for these right, casting was killing me
-static char** mkStringArray (unsigned int len) {
-  return (char **) malloc(sizeof(char *) * len);
-}
-
-static void freeCstringsN (char **array, unsigned int len) {
-    unsigned int i = 0;
-    for (i = 0; i < len; i++) {
-        free(array[i]);
-    }
-    free(array);
-}
-
-static void addStringToArray (char **array, char *str, unsigned int offset) {
-  array[offset] = str;
-}
 */
 import "C"
 

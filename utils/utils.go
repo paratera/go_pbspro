@@ -6,23 +6,6 @@ package utils
 #include <stdlib.h>
 #include "/opt/pbspro/include/pbs_error.h"
 #include "/opt/pbspro/include/pbs_ifl.h"
-
-// I gave up getting the CGO functions for these right, casting was killing me
-static char** mkStringArray (unsigned int len) {
-  return (char **) malloc(sizeof(char *) * len);
-}
-
-static void freeCstringsN (char **array, unsigned int len) {
-    unsigned int i = 0;
-    for (i = 0; i < len; i++) {
-        free(array[i]);
-    }
-    free(array);
-}
-
-static void addStringToArray (char **array, char *str, unsigned int offset) {
-  array[offset] = str;
-}
 */
 import "C"
 import (
@@ -232,12 +215,3 @@ func Pbs_strerror(errno int) string {
 	// char* from pbs_strerror is statically allocated, so can't be freed
 	return C.GoString(C.pbse_to_txt(C.int(errno)))
 }
-
-func cstringArray(strings []string) **C.char {
-	c := C.mkStringArray(C.uint(len(strings)))
-	for i, str := range strings {
-		C.addStringToArray(c, C.CString(str), C.uint(i))
-	}
-	return c
-}
-
