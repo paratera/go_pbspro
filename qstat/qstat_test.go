@@ -20,12 +20,6 @@ func TestServerStat(t *testing.T) {
 		t.Error(err)
 	}
 
-	err = qstat.DisconnectPBS()
-	if err != nil {
-		fmt.Println("DisconnectPBS Error")
-		t.Error(err)
-	}
-
 	bs, err := qstat.Pbs_statserver(nil, "")
 	if err != nil {
 		fmt.Println(err.Error())
@@ -33,6 +27,11 @@ func TestServerStat(t *testing.T) {
 	//Print Server State Informations.
 	fmt.Println(bs)
 
+	err = qstat.DisconnectPBS()
+	if err != nil {
+		fmt.Println("DisconnectPBS Error")
+		t.Error(err)
+	}
 }
 
 func TestNodeStat(t *testing.T) {
