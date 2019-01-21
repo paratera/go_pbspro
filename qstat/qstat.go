@@ -34,8 +34,8 @@ func NewQstat(server string) (qs *Qstat, err error) {
 
 	qstat.Server = server
 	qstat.Handle = 0
-	qstat.DefaultServer = nil
-	qstat.IsClosed = 0
+	qstat.DefaultServer = ""
+	qstat.IsClosed = false
 	qstat.Attribs = nil
 	qstat.Extend = ""
 
@@ -53,7 +53,7 @@ func (qs *Qstat) SetHandle(handle int) {
 }
 
 //设定属性列表
-func (qs *Qstat) Attribs(attribs []utils.Attrib) {
+func (qs *Qstat) SetAttribs(attribs []utils.Attrib) {
 	qs.Attribs = attribs
 }
 
