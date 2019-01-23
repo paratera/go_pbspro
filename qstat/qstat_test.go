@@ -103,9 +103,8 @@ func TestJobStat(t *testing.T) {
 		t.Error(err)
 	}
 
-	qstat.SetId("1045")
 	qstat.SetAttribs(nil)
-	qstat.SetExtend("")
+	qstat.SetExtend("x")
 
 	err = qstat.ConnectPBS()
 	if err != nil {
@@ -113,12 +112,15 @@ func TestJobStat(t *testing.T) {
 		t.Error(err)
 	}
 
-	bs, err := qstat.Pbs_statjob()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
+    for i :=0;i<100;i++{
+	    qstat.SetId(fmt.Sprintf("%d",i))
+		bs, err := qstat.Pbs_statjob()
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+	    //Print Job State Informations.
+	    fmt.Println(bs)
+    }
 
-	//Print Job State Informations.
-	fmt.Println(bs)
 
 }
