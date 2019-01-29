@@ -373,12 +373,10 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 			case "pbs_license_linger_time":
 				tmp_server_state_info.PBSLicenseLingerTime, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "license_count":
-				fmt.Println(attr.Value)
-				attr_array := strings.Split(attr.Value, " ")
-				for _, sc_valu := range attr_array {
-					scname := strings.Split(sc_valu, ":")[0]
-					scval := strings.Split(sc_valu, ":")[1]
-					fmt.Println(">>>attr_array", attr_array, "sc_valu", sc_valu, "scname", scname, "scval", scval)
+				attrArray := strings.Split(attr.Value, " ")
+				for _, scValList := range attrArray {
+					scname := strings.Split(scValList, ":")[0]
+					scval := strings.Split(scValList, ":")[1]
 					switch scname {
 					case "Avail_Global":
 						tmp_server_state_info.LicenseCountAvailGlobal, _ = strconv.ParseInt(scval, 10, 64)
