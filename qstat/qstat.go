@@ -317,7 +317,7 @@ func (qs *Qstat) PbsNodeState() error {
 				case "naccelerators":
 					tmpServerNodeState.ResourcesAssignedNaccelerators, _ = strconv.ParseInt(attr.Value, 10, 64)
 				case "ncpus":
-					tmpServerNodeState.ResourcesAssignedNcpus, _ = strcon.ParseInt(attr.Value, 10, 64)
+					tmpServerNodeState.ResourcesAssignedNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
 				case "vmem":
 					tmpServerNodeState.ResourcesAssignedVmem = attr.Value
 				default:
