@@ -21,12 +21,12 @@ func TestServerStat(t *testing.T) {
 		t.Error(err)
 	}
 
-	bs, err := qstat.Pbs_statserver()
+	err := qstat.PbsServerState()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 	//Print Server State Informations.
-	fmt.Println(bs)
+	fmt.Println(qstat.ServerState)
 
 	err = qstat.DisconnectPBS()
 	if err != nil {
@@ -112,15 +112,14 @@ func TestJobStat(t *testing.T) {
 		t.Error(err)
 	}
 
-    for i :=0;i<100;i++{
-	    qstat.SetID(fmt.Sprintf("%d",i))
+	for i := 0; i < 100; i++ {
+		qstat.SetID(fmt.Sprintf("%d", i))
 		bs, err := qstat.Pbs_statjob()
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-	    //Print Job State Informations.
-	    fmt.Println(bs)
-    }
-
+		//Print Job State Informations.
+		fmt.Println(bs)
+	}
 
 }

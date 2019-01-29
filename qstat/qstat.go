@@ -288,7 +288,7 @@ func (qs *Qstat) Pbs_statque() ([]utils.BatchStatus, error) {
 }
 
 //查询服务信息
-func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
+func (qs *Qstat) PbsServerState() error {
 	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
 
@@ -298,7 +298,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 	batch_status := C.pbs_statserver(C.int(qs.Handle), a, e)
 
 	if batch_status == nil {
-		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
+		return errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
 	defer C.pbs_statfree(batch_status)
 
@@ -415,9 +415,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 		qs.ServerState = append(qs.ServerState, tmp_server_state_info)
 	}
 
-	fmt.Printf("%v", qs.ServerState)
-
-	return batch, nil
+	return nil
 }
 
 //返回JOBID列表
