@@ -266,7 +266,7 @@ func (qs *Qstat) Pbs_statnode() ([]utils.BatchStatus, error) {
 }
 
 //查询指定队列信息
-func (qs *Qstat) PbsQueueState() ([]utils.BatchStatus, error) {
+func (qs *Qstat) PbsQueueState() error {
 	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
 
@@ -289,11 +289,56 @@ func (qs *Qstat) PbsQueueState() ([]utils.BatchStatus, error) {
 		var tmpServerQueueState QstatQueueInfo
 		tmpServerQueueState.QueueName = bs.Name
 		for _, attr := range bs.Attributes {
-			fmt.Println(attr)
+			switch attr.Name {
+			case "queue_type":
+				tmpServerQueueState.QueueType = attr.Value
+			case "total_jobs":
+				tmpServerQueueState.TotalJobs, _ = strconv.ParseInt(attr.Value, 10, 64)
+			case "state_count":
+				attrArray := strings.Split(attr.Value, " ")
+				for _, sc_valu := range attrArray {
+					if len(sc_valu) == 0 {
+						break
+					}
+					scname := strings.Split(sc_valu, ":")[0]
+					scval := strings.Split(sc_valu, ":")[1]
+					switch scname {
+					case "Transit":
+						tmpServerQueueState.StateCountTransit, _ = strconv.ParseInt(scval, 10, 64)
+					case "Queued":
+						tmpServerQueueState.StateCountQueued, _ = strconv.ParseInt(scval, 10, 64)
+					case "Held":
+						tmpServerQueueState.StateCountHeld, _ = strconv.ParseInt(scval, 10, 64)
+					case "Waiting":
+						tmpServerQueueState.StateCountWaiting, _ = strconv.ParseInt(scval, 10, 64)
+					case "Running":
+						tmpServerQueueState.StateCountRunning, _ = strconv.ParseInt(scval, 10, 64)
+					case "Exiting":
+						tmpServerQueueState.StateCountExiting, _ = strconv.ParseInt(scval, 10, 64)
+					case "Begun":
+						tmpServerQueueState.StateCountBegun, _ = strconv.ParseInt(scval, 10, 64)
+					default:
+						fmt.Println("other server_state_count")
+					}
+				}
+			case "resources_assigned":
+				if attr.Resource == "ncpus" {
+					tmpServerQueueState.ResourcesAssignedNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
+				}
+				if attr.Resource == "nodect" {
+					tmpServerQueueState.ResourcesAssignedNodect, _ = strconv.ParseInt(attr.Value, 10, 64)
+				}
+			case "enabled":
+				tmpServerQueueState.Enable = attr.Value
+			case "started":
+				tmpServerQueueState.Started = attr.Value
+			default:
+				fmt.Println("other queue state", attr.Name)
+			}
 		}
 	}
 
-	return batch, nil
+	return nil
 }
 
 //查询服务信息

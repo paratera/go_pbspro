@@ -82,12 +82,12 @@ func TestQueueStat(t *testing.T) {
 		t.Error(err)
 	}
 
-	bs, err := qstat.PbsQueueState()
+	err := qstat.PbsQueueState()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 	//Print Queue State Informations.
-	fmt.Println(bs)
+	fmt.Println(qstat.QueueState)
 
 	err = qstat.DisconnectPBS()
 	if err != nil {
