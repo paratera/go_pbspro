@@ -103,13 +103,18 @@ type (
 
 	//定义PBS结构体
 	Qstat struct {
-		Server        string         `json:"server"`
-		Handle        int            `json:"handle"`
-		DefaultServer string         `json:"default_server"`
-		IsClosed      bool           `json:"is_closed"`
-		Attribs       []utils.Attrib `json:"attribs"`
-		Extend        string         `json:"extend"`
-		Id            string         `json:"id"`
+		Server  string         `json:"server"`
+		Handle  int            `json:"handle"`
+		Attribs []utils.Attrib `json:"attribs"`
+		Extend  string         `json:"extend"`
+		Id      string         `json:"id"`
+
+		// server state information.
+		ServerState []QstatServerInfo
+		// queue state information.
+		QueueState []QstatQueueInfo
+		// node state information.
+		NodeState []QstatNodeInfo
 	}
 )
 
@@ -119,11 +124,13 @@ func NewQstat(server string) (qs *Qstat, err error) {
 
 	qstat.Server = server
 	qstat.Handle = 0
-	qstat.DefaultServer = ""
-	qstat.IsClosed = false
 	qstat.Attribs = nil
 	qstat.Extend = ""
 	qstat.Id = ""
+
+	qstat.ServerState = []QstatServerInfo{}
+	qstat.QueueState = []QstatQueueInfo{}
+	qstat.NodeState = []QstatNodeInfo{}
 
 	return qstat, nil
 }
