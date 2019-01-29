@@ -107,7 +107,7 @@ type (
 		Handle  int            `json:"handle"`
 		Attribs []utils.Attrib `json:"attribs"`
 		Extend  string         `json:"extend"`
-		Id      string         `json:"id"`
+		ID      string         `json:"id"`
 
 		// server state information.
 		ServerState []QstatServerInfo
@@ -126,7 +126,7 @@ func NewQstat(server string) (qs *Qstat, err error) {
 	qstat.Handle = 0
 	qstat.Attribs = nil
 	qstat.Extend = ""
-	qstat.Id = ""
+	qstat.ID = ""
 
 	qstat.ServerState = []QstatServerInfo{}
 	qstat.QueueState = []QstatQueueInfo{}
@@ -156,8 +156,8 @@ func (qs *Qstat) SetExtend(extend string) {
 }
 
 //设定Id值
-func (qs *Qstat) SetId(id string) {
-	qs.Id = id
+func (qs *Qstat) SetID(id string) {
+	qs.ID = id
 }
 
 //创建一个新的连接
@@ -216,7 +216,7 @@ func Pbs_freeattribl(attrl *C.struct_attrl) {
 
 //查询指定作业的信息
 func (qs *Qstat) Pbs_statjob() ([]utils.BatchStatus, error) {
-	i := C.CString(qs.Id)
+	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
 
 	e := C.CString(qs.Extend)
@@ -239,7 +239,7 @@ func (qs *Qstat) Pbs_statjob() ([]utils.BatchStatus, error) {
 
 //查询指定节点状态
 func (qs *Qstat) Pbs_statnode() ([]utils.BatchStatus, error) {
-	i := C.CString(qs.Id)
+	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
 
 	a := Pbs_attrib2attribl(qs.Attribs)
@@ -262,7 +262,7 @@ func (qs *Qstat) Pbs_statnode() ([]utils.BatchStatus, error) {
 
 //查询指定队列信息
 func (qs *Qstat) Pbs_statque() ([]utils.BatchStatus, error) {
-	i := C.CString(qs.Id)
+	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
 
 	a := Pbs_attrib2attribl(qs.Attribs)
