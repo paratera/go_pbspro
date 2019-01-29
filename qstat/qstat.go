@@ -289,9 +289,7 @@ func (qs *Qstat) PbsQueueState() ([]utils.BatchStatus, error) {
 		var tmpServerQueueState QstatQueueInfo
 		tmpServerQueueState.QueueName = bs.Name
 		for _, attr := range bs.Attribs {
-			switch attr.Name {
-				fmt.Println(attr)
-			}
+			fmt.Println(attr)
 		}
 	}
 
