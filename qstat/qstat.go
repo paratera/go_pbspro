@@ -320,6 +320,9 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 				attr_array := strings.Split(attr.Value, " ")
 				for _, sc_valu := range attr_array {
 					fmt.Println("###", sc_valu)
+					if len(sc_valu) == 0 {
+						break
+					}
 					scname := strings.Split(sc_valu, ":")[0]
 					scval := strings.Split(sc_valu, ":")[1]
 					switch scname {
