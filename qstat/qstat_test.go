@@ -114,7 +114,7 @@ func TestJobStat(t *testing.T) {
 
 	for i := 0; i < 100; i++ {
 		qstat.SetID(fmt.Sprintf("%d", i))
-		bs, err := qstat.Pbs_statjob()
+		_, err := qstat.Pbs_statjob()
 		if err != nil {
 			fmt.Println(err.Error())
 		}
