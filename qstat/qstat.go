@@ -599,7 +599,7 @@ func (qs *Qstat) PbsServerState() error {
 }
 
 //返回所有作业信息，如果Extend设为x，则返回所有历史信息。
-func (qs *Qstat) Pbs_selstat() ([]utils.BatchStatus, error) {
+func (qs *Qstat) PbsJobsState() error {
 	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
 
@@ -610,12 +610,118 @@ func (qs *Qstat) Pbs_selstat() ([]utils.BatchStatus, error) {
 
 	// FIXME: nil also indicates no jobs matched selection criteria...
 	if batch_status == nil {
-		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
+		return errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
 	defer C.pbs_statfree(batch_status)
 	batch := get_pbs_batch_status(batch_status)
 
-	return batch, nil
+	for _, jobs := range batch {
+		var tmpJobsStateInfo QstatJobsInfo
+		for _, attr := range value.Attributes {
+			switch attr.Name {
+			case "Job_Name":
+				tmpJobsStateInfo.JobName = attr.Value
+			case "Job_Owner":
+				tmpJobsStateInfo.JobOwner = attr.Value
+			case "resources_used":
+				if len(attr.Resource) == 0 {
+					break
+				}
+				switch att.Resource {
+				case "cpupercent":
+					tmpJobsStateInfo.ResourcesUsedCpuPercent, _ = strconv.ParseInt(attr.Value, 10, 64)
+				case "cput":
+					tmpJobsStateInfo.ResourcesUsedCput = attr.Value
+				case "mem":
+					tmpJobsStateInfo.ResourcesUsedMem = attr.Value
+				case "ncpus":
+					tmpJobsStateInfo.ResourcesUsedNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
+				case "vmem":
+					tmpJobsStateInfo.ResourcesUsedVmem = attr.Value
+				case "walltime":
+					tmpJobsStateInfo.ResourcesUsedWallTime = attr.Value
+				default:
+					fmt.Println("other jobs resources used", attr.Resource)
+				}
+			}
+		case "job_state":
+			tmpJobsStateInfo.JobState = attr.Value
+		case "queue":
+			tmpJobsStateInfo.Queue = attr.Value
+		case "server":
+			tmpJobsStateInfo.Server = attr.Value
+		case "Checkpoint":
+			tmpJobsStateInfo.CheckPoint = attr.Value
+		case "ctime":
+			tmpJobsStateInfo.Ctime,_ = strconv.ParseInt(attr.Value,10,64)
+		case "Error_Path":
+			tmpJobsStateInfo.ErrorPath = attr.Value
+		case "exec_host":
+			tmpJobsStateInfo.ExecHost = attr.Value
+		case "Hold_Types":
+			tmpJobsStateInfo.HoldType = attr.Value
+		case "Join_Path":
+			tmpJobsStateInfo.JoinPath = attr.Value
+		case "Keep_Files":
+			tmpJobsStateInfo.KeepFiles = attr.Value
+		case "Mail_Points":
+			tmpJobsStateInfo.MailFrom = attr.Value
+		case "mtime":
+			tmpJobsStateInfo.Mtime,_ = strconv>ParseInt(attr.Value,10,64)
+		case "Output_Path":
+			tmpJobsStateInfo.OutputPath = attr.Value
+		case "Priority":
+			tmpJobsStateInfo.Priority,_ = strconv.ParseInt(attr.Value,10,64)
+		case "qtime":
+			tmpJobsStateInfo.Qtime,_ = strconv.ParseInt(attr.Value,10,64)
+		case "Rerunable":
+			tmpJobsStateInfo.Rerunable = attr.Value
+		case "Resource_List":
+			if len(attr.Resource) == 0{
+				break
+			}
+			switch attr.Resource {
+			case "ncpus":
+				tmpJobsStateInfo.ResourceListNcpus,_ = strconv.ParseInt(attr.Value,10,64)
+			case "nodect":
+				tmpJobsStateInfo.ResourceListNodect,_ = strconv.ParseInt(attr.Value,10,64)
+			case "place":
+				tmpJobsStateInfo.ResourceListPlace = attr.Value
+			case "select":
+				tmpJobsStateInfo.ResourceListSelect = attr.Value
+			case "software":
+				tmpJobsStateInfo.ResourceListSoftware = attr.Value
+			case "walltime":
+				tmpJobsStateInfo.ResourceListWallTime = attr.Value
+			default:
+				fmt.Println("other jobs resources list resource",attr.Resource)
+			}
+		case "stime":
+			tmpJobsStateInfo.Stime,_ = strconv.ParseInt(attr.Value,10,64)
+		case "session_id":
+			tmpJobsStateInfo.SessionID,_ = strconv.ParseInt(attr.Value,10,64)
+		case "jobdir":
+			tmpJobsStateInfo.JobDir = attr.Value
+		case "substate":
+			tmpJobsStateInfo.SubState,_ = strconv.ParseInt(attr.Value,10,64)
+		case "Variable_List":
+			tmpJobsStateInfo.VariableList = attr.Value
+		case "comment":
+			tmpJobsStateInfo.Comment = attr.Value
+		case "etime":
+			tmpJobsStateInfo.Etime,_ = strconv.ParseInt(attr.Value,10,64)
+		case "run_count":
+			tmpJobsStateInfo.RunCount,_ = strconv.ParseInt(attr.Value,10,64)
+		case "Submit_arguments":
+			tmpJobsStateInfo.SubmitArguments = attr.Value
+		case "project":
+			tmpJobsStateInfo.Project = attr.Value
+		default:
+			fmt.Println("other jobs state",attr.Name)
+		}
+	}
+
+	return nil
 }
 
 //获取信息
