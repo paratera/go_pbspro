@@ -11,6 +11,7 @@ import "C"
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"unsafe"
 
 	"github.com/juju/errors"
@@ -316,7 +317,29 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 			case "total_jobs":
 				tmp_server_state_info.TotalJobs, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "state_count":
-
+				attr_array := strings.Split(attr.Value, " ")
+				for pos, sc_valu := range attr_array {
+					scname := strings.Split(sc_valu, ":")[0]
+					scval := strings.Split(sc_valu, ":")[1]
+					switch scname {
+					case "Transit":
+						tmp_server_state_info.StateCountTransit, _ = strconv.ParseInt(scval, 10, 64)
+					case "Queued":
+						tmp_server_state_info.StateCountQueued, _ = strconv.ParseInt(scval, 10, 64)
+					case "Held":
+						tmp_server_state_info.StateCountHeld, _ = strconv.ParseInt(scval, 10, 64)
+					case "Waiting":
+						tmp_server_state_info.StateCountWaiting, _ = strconv.ParseInt(scval, 10, 64)
+					case "Running":
+						tmp_server_state_info.StateCountRunning, _ = strconv.ParseInt(scval, 10, 64)
+					case "Exiting":
+						tmp_server_state_info.StateCountExiting, _ = strconv.ParseInt(scval, 10, 64)
+					case "Begun":
+						tmp_server_state_info.StateCountBegun, _ = strconv.ParseInt(scval, 10, 64)
+					default:
+						fmt.Println("other server_state_count")
+					}
+				}
 			case "default_queue":
 				tmp_server_state_info.DefaultQueue = attr.Value
 			case "log_events":
@@ -350,6 +373,23 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 			case "pbs_license_linger_time":
 				tmp_server_state_info.PBSLicenseLingerTime, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "license_count":
+				attr_array := strings.Split(attr.Value, " ")
+				for pos, sc_valu := range attr_array {
+					scname := strings.Split(sc_valu, ":")[0]
+					scval := strings.Split(sc_valu, ":")[1]
+					switch scname {
+					case "Avail_Global":
+						tmp_server_state_info.LicenseCountAvailGlobal, _ = strconv.ParseInt(scval, 10, 64)
+					case "Avail_Local":
+						tmp_server_state_info.LicenseCountAvailLocal, _ = strconv.ParseInt(scval, 10, 64)
+					case "Used":
+						tmp_server_state_info.LicenseCountUsed, _ = strconv.ParseInt(scval, 10, 64)
+					case "High_Use":
+						tmp_server_state_info.LicenseCountHighUse, _ = strconv.ParseInt(scval, 10, 64)
+					default:
+						fmt.Println("other license_count")
+					}
+				}
 			case "pbs_version":
 				tmp_server_state_info.PBSVersion = attr.Value
 			case "eligible_time_enable":
