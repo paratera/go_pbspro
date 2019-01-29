@@ -318,7 +318,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 				tmp_server_state_info.TotalJobs, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "state_count":
 				attr_array := strings.Split(attr.Value, " ")
-				for pos, sc_valu := range attr_array {
+				for _, sc_valu := range attr_array {
 					scname := strings.Split(sc_valu, ":")[0]
 					scval := strings.Split(sc_valu, ":")[1]
 					switch scname {
@@ -374,7 +374,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 				tmp_server_state_info.PBSLicenseLingerTime, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "license_count":
 				attr_array := strings.Split(attr.Value, " ")
-				for pos, sc_valu := range attr_array {
+				for _, sc_valu := range attr_array {
 					scname := strings.Split(sc_valu, ":")[0]
 					scval := strings.Split(sc_valu, ":")[1]
 					switch scname {
