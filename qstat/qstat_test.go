@@ -139,11 +139,11 @@ func TestAllJobState(t *testing.T) {
 		t.Error(err)
 	}
 
-	bs, err := qstat.Pbs_selstat()
+	err = qstat.PbsJobsState()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 	//Print Job State Informations.
-	fmt.Println(bs)
+	fmt.Println(qstat.JobsState)
 
 }
