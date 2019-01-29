@@ -336,6 +336,7 @@ func (qs *Qstat) PbsQueueState() error {
 				fmt.Println("other queue state", attr.Name)
 			}
 		}
+		qs.QueueState = append(qs.QueueState, tmpServerQueueState)
 	}
 
 	return nil
