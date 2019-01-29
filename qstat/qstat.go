@@ -304,7 +304,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 	batch := get_pbs_batch_status(batch_status)
 
 	for _, value := range batch {
-		tmp_server_state_info := new(QstatServerInfo)
+		var tmp_server_state_info QstatServerInfo
 		for _, attr := range value.Attributes {
 			switch attr.Name {
 			case "server_state":
@@ -369,7 +369,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 		qs.ServerState = append(qs.ServerState, tmp_server_state_info)
 	}
 
-	fmt.Println(qs.QstatServerInfo)
+	fmt.Println(qs.ServerState)
 
 	return batch, nil
 }
