@@ -21,7 +21,7 @@ func TestServerStat(t *testing.T) {
 		t.Error(err)
 	}
 
-	err := qstat.PbsServerState()
+	err = qstat.PbsServerState()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
