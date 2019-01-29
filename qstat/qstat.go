@@ -10,6 +10,7 @@ package qstat
 import "C"
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"unsafe"
@@ -415,7 +416,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 		qs.ServerState = append(qs.ServerState, tmp_server_state_info)
 	}
 
-	fmt.Println(qs.ServerState)
+	fmt.Fprintf(os.Stdout, "%v", qs.ServerState)
 
 	return batch, nil
 }
