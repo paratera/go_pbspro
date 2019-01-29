@@ -292,7 +292,7 @@ func (qs *Qstat) PbsNodeState() error {
 					tmpServerNodeState.ResourcesAssignedMem = attr.Value
 				case "ncpus":
 					tmpServerNodeState.ResourcesAssignedNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
-				case "pass_application_enable":
+				case "pas_applications_enabled":
 					tmpServerNodeState.ResourcesAvailableApplications = attr.Value
 				case "platform":
 					tmpServerNodeState.ResourcesAvailablePlatform = attr.Value
