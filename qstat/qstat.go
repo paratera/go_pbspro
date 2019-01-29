@@ -617,7 +617,7 @@ func (qs *Qstat) PbsJobsState() error {
 
 	for _, jobs := range batch {
 		var tmpJobsStateInfo QstatJobsInfo
-		for _, attr := range value.Attributes {
+		for _, attr := range jobs.Attributes {
 			switch attr.Name {
 			case "Job_Name":
 				tmpJobsStateInfo.JobName = attr.Value
@@ -643,8 +643,6 @@ func (qs *Qstat) PbsJobsState() error {
 				default:
 					fmt.Println("other jobs resources used", attr.Resource)
 				}
-			}
-		}
 		case "job_state":
 			tmpJobsStateInfo.JobState = attr.Value
 		case "queue":
@@ -688,7 +686,7 @@ func (qs *Qstat) PbsJobsState() error {
 				tmpJobsStateInfo.ResourceListNodect,_ = strconv.ParseInt(attr.Value,10,64)
 			case "place":
 				tmpJobsStateInfo.ResourceListPlace = attr.Value
-			case "select":
+			case "select"
 				tmpJobsStateInfo.ResourceListSelect = attr.Value
 			case "software":
 				tmpJobsStateInfo.ResourceListSoftware = attr.Value
@@ -720,8 +718,9 @@ func (qs *Qstat) PbsJobsState() error {
 		default:
 			fmt.Println("other jobs state",attr.Name)
 		}
-	}
-
+			}
+	}	
+	
 	return nil
 }
 
