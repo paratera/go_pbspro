@@ -301,7 +301,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 
 	batch := get_pbs_batch_status(batch_status)
 
-	for pos, value := range batch {
+	for _, value := range batch {
 		fmt.Println(value)
 	}
 
