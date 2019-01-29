@@ -51,12 +51,12 @@ func TestNodeStat(t *testing.T) {
 		t.Error(err)
 	}
 
-	bs, err := qstat.Pbs_statnode()
+	err = qstat.PbsNodeState()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 	//Print Server State Informations.
-	fmt.Println(bs)
+	fmt.Println(qstat.NodeState)
 
 	err = qstat.DisconnectPBS()
 	if err != nil {

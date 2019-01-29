@@ -22,6 +22,7 @@ import (
 type (
 	// qstat gather server state information.
 	QstatServerInfo struct {
+		ServerName              string `json:"server_name" db:"server_name"`
 		ServerState             string `json:"server_state" db:"server_state"`
 		ServerHost              string `json:"server_host" db:"server_host"`
 		ServerScheduling        string `json:"server_scheduling" db:"server_scheduling"`
@@ -81,29 +82,30 @@ type (
 
 	//qstat gather node information.
 	QstatNodeInfo struct {
-		Mom                                string           `json:"mom" db:"mom"`
-		Ntype                              string           `json:"ntype" db:"ntype"`
-		State                              string           `json:'state" db:"state"`
-		Pcpus                              int64            `json:"pcpus" db:"pcpus"`
-		Jobs                               map[string]int64 `json:"jobs" db:"jobs"`
-		ResourcesAvailableArch             string           `json:"resources_available_arch" db:"resources_available_arch"`
-		ResourcesAvailableHost             string           `json:"resources_available_host" db:"resources_available_host"`
-		ResourcesAvailableMem              string           `json:"resources_available_mem" db:"resources_available_mem"`
-		ResourcesAvailableNcpus            int64            `json:"resources_available_ncpus" db:"resources_available_ncpus"`
-		ResourcesAvailableApplications     string           `json:"resources_available_pas_applications_enabled" db:"resources_available_pas_applications_enabled"`
-		ResourcesAvailablePlatform         string           `json:"resources_available_platform" db:"resources_available_platform"`
-		ResourcesAvailableSoftware         string           `json:"resources_availabled_software" db:"resources_available_software"`
-		ResourcesAvailableVnodes           string           `json:"resources_available_vnodes" db:"resources_available_vnodes"`
-		ResourcesAssignedAcceleratorMemory string           `json:"resources_assigned_accelerator_memory" db:"resources_assigned_accelerator_memory"`
-		ResourcesAssignedHbmem             string           `json:"resources_assigned_hbmem" db:"resources_assigned_hbmem"`
-		ResourcesAssignedMem               string           `json:"resources_assigned_mem" db:"resources_assigned_mem"`
-		ResourcesAssignedNaccelerators     int64            `json:"resources_assigned_naccelerators" db:"resources_assigned_naccelerators"`
-		ResourcesAssignedNcpus             int64            `json:"resources_assigned_ncpus" db:"resources_assigned_ncpus"`
-		ResourcesAssignedVmem              string           `json:"resources_assigned_vmem" db:"resources_assigned_vmem"`
-		ResvEnable                         string           `json:"resv_enable" db:"resv_enable"`
-		Sharing                            string           `json:"sharing" db:"sharing"`
-		LastStateChangeTime                int64            `json:"last_state_change_time" db:"last_state_change_time"`
-		LastUsedTime                       int64            `json:"last_used_time" db:"last_used_time"`
+		NodeName                           string `json:"node_name" db:"node_name"`
+		Mom                                string `json:"mom" db:"mom"`
+		Ntype                              string `json:"ntype" db:"ntype"`
+		State                              string `json:'state" db:"state"`
+		Pcpus                              int64  `json:"pcpus" db:"pcpus"`
+		Jobs                               string `json:"jobs" db:"jobs"`
+		ResourcesAvailableArch             string `json:"resources_available_arch" db:"resources_available_arch"`
+		ResourcesAvailableHost             string `json:"resources_available_host" db:"resources_available_host"`
+		ResourcesAvailableMem              string `json:"resources_available_mem" db:"resources_available_mem"`
+		ResourcesAvailableNcpus            int64  `json:"resources_available_ncpus" db:"resources_available_ncpus"`
+		ResourcesAvailableApplications     string `json:"resources_available_pas_applications_enabled" db:"resources_available_pas_applications_enabled"`
+		ResourcesAvailablePlatform         string `json:"resources_available_platform" db:"resources_available_platform"`
+		ResourcesAvailableSoftware         string `json:"resources_availabled_software" db:"resources_available_software"`
+		ResourcesAvailableVnodes           string `json:"resources_available_vnodes" db:"resources_available_vnodes"`
+		ResourcesAssignedAcceleratorMemory string `json:"resources_assigned_accelerator_memory" db:"resources_assigned_accelerator_memory"`
+		ResourcesAssignedHbmem             string `json:"resources_assigned_hbmem" db:"resources_assigned_hbmem"`
+		ResourcesAssignedMem               string `json:"resources_assigned_mem" db:"resources_assigned_mem"`
+		ResourcesAssignedNaccelerators     int64  `json:"resources_assigned_naccelerators" db:"resources_assigned_naccelerators"`
+		ResourcesAssignedNcpus             int64  `json:"resources_assigned_ncpus" db:"resources_assigned_ncpus"`
+		ResourcesAssignedVmem              string `json:"resources_assigned_vmem" db:"resources_assigned_vmem"`
+		ResvEnable                         string `json:"resv_enable" db:"resv_enable"`
+		Sharing                            string `json:"sharing" db:"sharing"`
+		LastStateChangeTime                int64  `json:"last_state_change_time" db:"last_state_change_time"`
+		LastUsedTime                       int64  `json:"last_used_time" db:"last_used_time"`
 	}
 
 	//定义PBS结构体
@@ -243,7 +245,7 @@ func (qs *Qstat) Pbs_statjob() ([]utils.BatchStatus, error) {
 }
 
 //查询指定节点状态
-func (qs *Qstat) Pbs_statnode() ([]utils.BatchStatus, error) {
+func (qs *Qstat) PbsNodeState() error {
 	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
 
@@ -256,13 +258,87 @@ func (qs *Qstat) Pbs_statnode() ([]utils.BatchStatus, error) {
 	batch_status := C.pbs_statnode(C.int(qs.Handle), i, a, e)
 
 	if batch_status == nil {
-		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
+		return errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
 	defer C.pbs_statfree(batch_status)
 
 	batch := get_pbs_batch_status(batch_status)
 
-	return batch, nil
+	for _, bs := range batch {
+		var tmpServerNodeState QstatNodeInfo
+		tmpServerNodeState.NodeName = bs.Name
+		for _, attr := range bs.Attributes {
+			switch attr.Name {
+			case "Mom":
+				tmpServerNodeState.Mom = attr.Value
+			case "ntype":
+				tmpServerNodeState.Ntype = attr.Value
+			case "state":
+				tmpServerNodeState.State = attr.Value
+			case "pcpus":
+				tmpServerNodeState.Pcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
+			case "jobs":
+				tmpServerNodeState.Jobs = attr.Value
+			case "resources_available":
+				if len(attr.Resource) == 0 {
+					break
+				}
+				switch attr.Resource {
+				case "arch":
+					tmpServerNodeState.ResourcesAvailableArch = attr.Value
+				case "host":
+					tmpServerNodeState.ResourcesAvailableHost = attr.Value
+				case "mem":
+					tmpServerNodeState.ResourcesAssignedMem = attr.Value
+				case "ncpus":
+					tmpServerNodeState.ResourcesAssignedNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
+				case "pass_application_enable":
+					tmpServerNodeState.ResourcesAvailableApplications = attr.Value
+				case "platform":
+					tmpServerNodeState.ResourcesAvailablePlatform = attr.Value
+				case "software":
+					tmpServerNodeState.ResourcesAvailableSoftware = attr.Value
+				case "vnode":
+					tmpServerNodeState.ResourcesAvailableVnodes = attr.Value
+				default:
+					fmt.Println("other node resources avaiable", attr.Name)
+				}
+			case "resources_assigned":
+				if len(attr.Resource) == 0 {
+					break
+				}
+				switch attr.Resource {
+				case "accelerator_memory":
+					tmpServerNodeState.ResourcesAssignedAcceleratorMemory = attr.Value
+				case "hbmem":
+					tmpServerNodeState.ResourcesAssignedHbmem = attr.Value
+				case "mem":
+					tmpServerNodeState.ResourcesAssignedMem = attr.Value
+				case "naccelerators":
+					tmpServerNodeState.ResourcesAssignedNaccelerators, _ = strconv.ParseInt(attr.Value, 10, 64)
+				case "ncpus":
+					tmpServerNodeState.ResourcesAssignedNcpus, _ = strcon.ParseInt(attr.Value, 10, 64)
+				case "vmem":
+					tmpServerNodeState.ResourcesAssignedVmem = attr.Value
+				default:
+					fmt.Println("other node resources assigned", attr.Name)
+				}
+			case "resv_enable":
+				tmpServerNodeState.ResvEnable = attr.Value
+			case "sharing":
+				tmpServerNodeState.Sharing = attr.Value
+			case "last_state_change_time":
+				tmpServerNodeState.LastStateChangeTime, _ = strconv.ParseInt(attr.Value, 10, 64)
+			case "last_used_time":
+				tmpServerNodeState.LastUsedTime, _ = strconv.ParseInt(attr.Value, 10, 64)
+			default:
+				fmt.Println("other node state", attr.Name)
+			}
+		}
+		qs.NodeState = append(qs.NodeState, tmpServerNodeState)
+	}
+
+	return nil
 }
 
 //查询指定队列信息
