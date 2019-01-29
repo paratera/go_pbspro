@@ -9,6 +9,7 @@ package qstat
 */
 import "C"
 import (
+	"fmt"
 	"unsafe"
 
 	"github.com/juju/errors"
