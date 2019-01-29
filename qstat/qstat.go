@@ -657,6 +657,8 @@ func (qs *Qstat) PbsJobsState() error {
 				tmpJobsStateInfo.ErrorPath = attr.Value
 			case "exec_host":
 				tmpJobsStateInfo.ExecHost = attr.Value
+			case "exec_vnode":
+				tmpJobsStateInfo.ExecVnode = attr.Value
 			case "Hold_Types":
 				tmpJobsStateInfo.HoldType = attr.Value
 			case "Join_Path":
@@ -719,6 +721,7 @@ func (qs *Qstat) PbsJobsState() error {
 				fmt.Println("other jobs state", attr.Name)
 			}
 		}
+		qs.JobsState = append(qs.JobsState, tmpJobsStateInfo)
 	}
 
 	return nil
