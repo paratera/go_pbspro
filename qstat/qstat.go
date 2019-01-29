@@ -9,7 +9,6 @@ package qstat
 */
 import "C"
 import (
-	"fmt"
 	"unsafe"
 
 	"github.com/juju/errors"
@@ -302,7 +301,9 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 	batch := get_pbs_batch_status(batch_status)
 
 	for _, value := range batch {
-		fmt.Println(value)
+		for _, attr := range value.Attributes {
+			fmt.Println(attr)
+		}
 	}
 
 	return batch, nil
