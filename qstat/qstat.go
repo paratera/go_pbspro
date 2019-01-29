@@ -629,7 +629,7 @@ func (qs *Qstat) PbsJobsState() error {
 				}
 				switch attr.Resource {
 				case "cpupercent":
-					tmpJobsStateInfo.ResourcesUsedCpuPercent, _ = strconv.ParseInt(attr.Value, 10, 64)
+					tmpJobsStateInfo.ResourcesUsedCpuPercent, _ = strconv.ParseFloat(attr.Value, 64)
 				case "cput":
 					tmpJobsStateInfo.ResourcesUsedCput = attr.Value
 				case "mem":
