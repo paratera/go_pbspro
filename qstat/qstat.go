@@ -319,6 +319,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 			case "state_count":
 				attr_array := strings.Split(attr.Value, " ")
 				for _, sc_valu := range attr_array {
+					fmt.Println("###", sc_valu)
 					scname := strings.Split(sc_valu, ":")[0]
 					scval := strings.Split(sc_valu, ":")[1]
 					switch scname {
