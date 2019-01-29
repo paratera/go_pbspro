@@ -63,6 +63,7 @@ type (
 
 	// qstat gather queue information.
 	QstatQueueInfo struct {
+		QueueName               string `json:"queue_name" db:"queue_name"`
 		QueueType               string `json:"queue_type" db:"queue_type"`
 		TotalJobs               int64  `json:"total_jobs" db:"total_jobs"`
 		StateCountTransit       int64  `json:"state_count_transit" db:"state_count_transit"`
@@ -265,7 +266,7 @@ func (qs *Qstat) Pbs_statnode() ([]utils.BatchStatus, error) {
 }
 
 //查询指定队列信息
-func (qs *Qstat) Pbs_statque() ([]utils.BatchStatus, error) {
+func (qs *Qstat) PbsQueueState() ([]utils.BatchStatus, error) {
 	i := C.CString(qs.ID)
 	defer C.free(unsafe.Pointer(i))
 
@@ -284,6 +285,16 @@ func (qs *Qstat) Pbs_statque() ([]utils.BatchStatus, error) {
 
 	batch := get_pbs_batch_status(batch_status)
 
+	for _, bs := range batch {
+		var tmpServerQueueState QstatQueueInfo
+		tmpServerQueueState.QueueName = bs.Name
+		for _, attr := range bs.Attribs {
+			switch attr.Name {
+				fmt.Println(attr)
+			}
+		}
+	}
+
 	return batch, nil
 }
 
@@ -295,14 +306,14 @@ func (qs *Qstat) PbsServerState() error {
 	e := C.CString(qs.Extend)
 	defer C.free(unsafe.Pointer(e))
 
-	batch_status := C.pbs_statserver(C.int(qs.Handle), a, e)
+	batchStatus := C.pbs_statserver(C.int(qs.Handle), a, e)
 
 	if batch_status == nil {
 		return errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
-	defer C.pbs_statfree(batch_status)
+	defer C.pbs_statfree(batchStatus)
 
-	batch := get_pbs_batch_status(batch_status)
+	batch := get_pbs_batch_status(batchStatus)
 
 	for _, value := range batch {
 		var tmp_server_state_info QstatServerInfo
