@@ -59,7 +59,7 @@ A PBSpro Cluster to test.
     )
 
     func main() {
-                	qstat, err := NewQstat("172.18.7.10")
+            qstat, err := NewQstat("172.18.7.10")
         	if err != nil {
         		t.Error(err)
         	}
@@ -73,12 +73,12 @@ A PBSpro Cluster to test.
         		t.Error(err)
         	}
         
-        	bs, err := qstat.Pbs_statserver()
+        	err = qstat.PbsServerState()
         	if err != nil {
         		fmt.Println(err.Error())
         	}
         	//Print Server State Informations.
-        	fmt.Println(bs)
+        	fmt.Println(qstat.ServerState)
         
         	err = qstat.DisconnectPBS()
         	if err != nil {
