@@ -108,6 +108,51 @@ type (
 		LastUsedTime                       int64  `json:"last_used_time" db:"last_used_time"`
 	}
 
+	//qstat gather jobs information.
+	QstatJobsInfo struct {
+		JobName                 string  `json:"job_name" db:"job_name"`
+		JobOwner                string  `json:"job_owner" db:"job_owner"`
+		ResourcesUsedCpuPercent float64 `json:"resources_used_cpupercent" db:"resources_used_cpupercent"`
+		ResourcesUsedCput       string  `json:"resources_used_cput" db:"resources_used_cput"`
+		ResourcesUsedMem        string  `json:"resources_used_mem" db:"resources_used_mem"`
+		ResourcesUsedNcpus      int64   `json:"resources_used_ncpus" db:"resources_used_ncpus"`
+		ResourcesUsedVmem       string  `json:"resources_used_vmem" db:"resources_used_vmem"`
+		ResourcesUsedWallTime   string  `json:"resources_used_walltime" db:"resources_used_walltime"`
+		JobState                string  `json:"job_state" db:"job_state"`
+		Queue                   string  `json:"queue" db:"queue"`
+		Server                  string  `json:"server" db:"server"`
+		CheckPoint              string  `json:"checkpoint" db:"checkpoint"`
+		Ctime                   int64   `json:"ctime" db:"ctime"`
+		ErrorPath               string  `json:"error_path" db:"error_path"`
+		ExecHost                string  `json:"exec_host" db:"exec_host"`
+		ExecVnode               string  `json:"exec_vnode" db:"exec_vnode"`
+		HoldType                string  `json:"hold_type" db:"hold_type"`
+		JoinPath                string  `json:"join_path" db:"join_path"`
+		KeepFiles               string  `json:"keep_files" db:"keep_files"`
+		MailPoints              string  `json:"mail_points" db:"mail_points"`
+		Mtime                   int64   `json:"mtime" db:"mtime"`
+		OutputPath              string  `json:"output_path" db:"output_path"`
+		Priorty                 int64   `json:"priorty" db:"priorty"`
+		Qtime                   int64   `json:"qtime" db:"qtime"`
+		Rerunable               string  `json:"rerunable" db:"rerunable"`
+		ResourceListNcpus       int64   `json:"resource_list_ncpus" db:"resource_list_ncpus"`
+		ResourceListNodect      int64   `json:"resource_list_nodect" db:"resource_list_nodect"`
+		ResourceListPlace       string  `json:"resource_list_place" db:"resource_list_place"`
+		ResourceListSelect      string  `json:"resource_list_select" db:"resource_list_select"`
+		ResourceListSoftware    string  `json:"resource_list_software" db:"resource_list_software"`
+		ResourceListWallTime    string  `json:"resource_list_walltime" db:"resource_list_walltime"`
+		Stime                   int64   `json:"stime" db:"stime"`
+		SessionID               int64   `json:"session_id" db:"session_id"`
+		JobDir                  string  `json:"jobdir" db:"jobdir"`
+		SubState                int64   `json:"substate" db:"substate"`
+		VariableList            string  `json:"variable_list" db:"variable_list"`
+		Comment                 string  `json:"comment" db:"comment"`
+		Etime                   int64   `json:"etime" db:"etime"`
+		RunCount                int64   `json:"run_count" db:"run_count"`
+		SubmitArguments         string  `json:"submit_arguments" db:"submit_arguments"`
+		Project                 string  `json:"project" db:"project"`
+	}
+
 	//定义PBS结构体
 	Qstat struct {
 		Server  string         `json:"server"`
@@ -122,6 +167,8 @@ type (
 		QueueState []QstatQueueInfo
 		// node state information.
 		NodeState []QstatNodeInfo
+		// jobs state information.
+		JobsState []QstatJobsInfo
 	}
 )
 
@@ -138,6 +185,7 @@ func NewQstat(server string) (qs *Qstat, err error) {
 	qstat.ServerState = []QstatServerInfo{}
 	qstat.QueueState = []QstatQueueInfo{}
 	qstat.NodeState = []QstatNodeInfo{}
+	qstat.JobsState = []QstatJobsInfo{}
 
 	return qstat, nil
 }

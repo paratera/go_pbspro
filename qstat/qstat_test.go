@@ -97,7 +97,7 @@ func TestQueueStat(t *testing.T) {
 
 }
 
-func TestJobStat(t *testing.T) {
+func TestOneJobStat(t *testing.T) {
 	qstat, err := NewQstat("172.18.7.10")
 	if err != nil {
 		t.Error(err)
@@ -124,7 +124,7 @@ func TestJobStat(t *testing.T) {
 
 }
 
-func TestJobList(t *testing.T) {
+func TestAllJobState(t *testing.T) {
 	qstat, err := NewQstat("172.18.7.10")
 	if err != nil {
 		t.Error(err)
