@@ -318,10 +318,10 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 				tmp_server_state_info.TotalJobs, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "state_count":
 				attr_array := strings.Split(attr.Value, " ")
-				fmt.Println(">>>attr_array", attr_array)
 				for _, sc_valu := range attr_array {
 					scname := strings.Split(sc_valu, ":")[0]
 					scval := strings.Split(sc_valu, ":")[1]
+					fmt.Println(">>>attr_array", attr_array, "sc_valu", sc_valu, "scname", scname, "scval", scval)
 					switch scname {
 					case "Transit":
 						tmp_server_state_info.StateCountTransit, _ = strconv.ParseInt(scval, 10, 64)
