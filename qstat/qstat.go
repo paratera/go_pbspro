@@ -312,7 +312,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 			case "server_host":
 				tmp_server_state_info.ServerHost = attr.Value
 			case "scheduling":
-				tmp_server_state_info.scheduling = attr.Value
+				tmp_server_state_info.ServerScheduling = attr.Value
 			case "total_jobs":
 				tmp_server_state_info.TotalJobs, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "state_count":
@@ -366,7 +366,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 				fmt.Println("other server state info.")
 			}
 		}
-		qs.QstatServerInfo = append(qs.QstatServerInfo, tmp_server_state_info)
+		qs.ServerState = append(qs.ServerState, tmp_server_state_info)
 	}
 
 	fmt.Println(qs.QstatServerInfo)
