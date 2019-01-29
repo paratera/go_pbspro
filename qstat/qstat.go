@@ -437,6 +437,7 @@ func (qs *Qstat) PbsServerState() error {
 
 	for _, value := range batch {
 		var tmp_server_state_info QstatServerInfo
+		tmp_server_state_info.ServerName = value.Name
 		for _, attr := range value.Attributes {
 			switch attr.Name {
 			case "server_state":
@@ -549,7 +550,7 @@ func (qs *Qstat) PbsServerState() error {
 	return nil
 }
 
-//返回JOBID列表
+//返回所有作业信息，如果Extend设为x，则返回所有历史信息。
 func (qs *Qstat) Pbs_selstat() ([]utils.BatchStatus, error) {
 	a := Pbs_attrib2attribl(qs.Attribs)
 	defer Pbs_freeattribl(a)
