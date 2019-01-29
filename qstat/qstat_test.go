@@ -119,7 +119,7 @@ func TestJobStat(t *testing.T) {
 			fmt.Println(err.Error())
 		}
 		//Print Job State Informations.
-		fmt.Println(bs)
+		//fmt.Println(bs)
 	}
 
 }
