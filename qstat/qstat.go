@@ -303,7 +303,12 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 
 	for _, value := range batch {
 		for _, attr := range value.Attributes {
-			fmt.Println(attr)
+			switch attr.Name {
+			case "server_state":
+				fmt.Println(">>>yes")
+			default:
+				fmt.Println("default")
+			}
 		}
 	}
 
