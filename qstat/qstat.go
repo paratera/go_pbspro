@@ -407,7 +407,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 			case "power_provisioning":
 				tmp_server_state_info.PowerProvisioning = attr.Value
 			default:
-				fmt.Println("other server state info.")
+				fmt.Println("other server state info.", attr.Name)
 			}
 		}
 		qs.ServerState = append(qs.ServerState, tmp_server_state_info)
