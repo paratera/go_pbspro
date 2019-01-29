@@ -10,6 +10,7 @@ package qstat
 import "C"
 import (
 	"fmt"
+	"strconv"
 	"unsafe"
 
 	"github.com/juju/errors"
@@ -313,7 +314,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 			case "scheduling":
 				tmp_server_state_info.scheduling = attr.Value
 			case "total_jobs":
-				tmp_server_state_info.TotalJobs = attr.Value
+				tmp_server_state_info.TotalJobs, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "state_count":
 
 			case "default_queue":
