@@ -82,7 +82,7 @@ func TestQueueStat(t *testing.T) {
 		t.Error(err)
 	}
 
-	err := qstat.PbsQueueState()
+	err = qstat.PbsQueueState()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
