@@ -643,84 +643,84 @@ func (qs *Qstat) PbsJobsState() error {
 				default:
 					fmt.Println("other jobs resources used", attr.Resource)
 				}
-		case "job_state":
-			tmpJobsStateInfo.JobState = attr.Value
-		case "queue":
-			tmpJobsStateInfo.Queue = attr.Value
-		case "server":
-			tmpJobsStateInfo.Server = attr.Value
-		case "Checkpoint":
-			tmpJobsStateInfo.CheckPoint = attr.Value
-		case "ctime":
-			tmpJobsStateInfo.Ctime,_ = strconv.ParseInt(attr.Value,10,64)
-		case "Error_Path":
-			tmpJobsStateInfo.ErrorPath = attr.Value
-		case "exec_host":
-			tmpJobsStateInfo.ExecHost = attr.Value
-		case "Hold_Types":
-			tmpJobsStateInfo.HoldType = attr.Value
-		case "Join_Path":
-			tmpJobsStateInfo.JoinPath = attr.Value
-		case "Keep_Files":
-			tmpJobsStateInfo.KeepFiles = attr.Value
-		case "Mail_Points":
-			tmpJobsStateInfo.MailFrom = attr.Value
-		case "mtime":
-			tmpJobsStateInfo.Mtime,_ = strconv>ParseInt(attr.Value,10,64)
-		case "Output_Path":
-			tmpJobsStateInfo.OutputPath = attr.Value
-		case "Priority":
-			tmpJobsStateInfo.Priority,_ = strconv.ParseInt(attr.Value,10,64)
-		case "qtime":
-			tmpJobsStateInfo.Qtime,_ = strconv.ParseInt(attr.Value,10,64)
-		case "Rerunable":
-			tmpJobsStateInfo.Rerunable = attr.Value
-		case "Resource_List":
-			if len(attr.Resource) == 0{
-				break
-			}
-			switch attr.Resource {
-			case "ncpus":
-				tmpJobsStateInfo.ResourceListNcpus,_ = strconv.ParseInt(attr.Value,10,64)
-			case "nodect":
-				tmpJobsStateInfo.ResourceListNodect,_ = strconv.ParseInt(attr.Value,10,64)
-			case "place":
-				tmpJobsStateInfo.ResourceListPlace = attr.Value
-			case "select"
-				tmpJobsStateInfo.ResourceListSelect = attr.Value
-			case "software":
-				tmpJobsStateInfo.ResourceListSoftware = attr.Value
-			case "walltime":
-				tmpJobsStateInfo.ResourceListWallTime = attr.Value
+			case "job_state":
+				tmpJobsStateInfo.JobState = attr.Value
+			case "queue":
+				tmpJobsStateInfo.Queue = attr.Value
+			case "server":
+				tmpJobsStateInfo.Server = attr.Value
+			case "Checkpoint":
+				tmpJobsStateInfo.CheckPoint = attr.Value
+			case "ctime":
+				tmpJobsStateInfo.Ctime, _ = strconv.ParseInt(attr.Value, 10, 64)
+			case "Error_Path":
+				tmpJobsStateInfo.ErrorPath = attr.Value
+			case "exec_host":
+				tmpJobsStateInfo.ExecHost = attr.Value
+			case "Hold_Types":
+				tmpJobsStateInfo.HoldType = attr.Value
+			case "Join_Path":
+				tmpJobsStateInfo.JoinPath = attr.Value
+			case "Keep_Files":
+				tmpJobsStateInfo.KeepFiles = attr.Value
+			case "Mail_Points":
+				tmpJobsStateInfo.MailFrom = attr.Value
+			case "mtime":
+				tmpJobsStateInfo.Mtime, _ = strconv > ParseInt(attr.Value, 10, 64)
+			case "Output_Path":
+				tmpJobsStateInfo.OutputPath = attr.Value
+			case "Priority":
+				tmpJobsStateInfo.Priority, _ = strconv.ParseInt(attr.Value, 10, 64)
+			case "qtime":
+				tmpJobsStateInfo.Qtime, _ = strconv.ParseInt(attr.Value, 10, 64)
+			case "Rerunable":
+				tmpJobsStateInfo.Rerunable = attr.Value
+			case "Resource_List":
+				if len(attr.Resource) == 0 {
+					break
+				}
+				switch attr.Resource {
+				case "ncpus":
+					tmpJobsStateInfo.ResourceListNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
+				case "nodect":
+					tmpJobsStateInfo.ResourceListNodect, _ = strconv.ParseInt(attr.Value, 10, 64)
+				case "place":
+					tmpJobsStateInfo.ResourceListPlace = attr.Value
+				case "select":
+					tmpJobsStateInfo.ResourceListSelect = attr.Value
+				case "software":
+					tmpJobsStateInfo.ResourceListSoftware = attr.Value
+				case "walltime":
+					tmpJobsStateInfo.ResourceListWallTime = attr.Value
+				default:
+					fmt.Println("other jobs resources list resource", attr.Resource)
+				}
+			case "stime":
+				tmpJobsStateInfo.Stime, _ = strconv.ParseInt(attr.Value, 10, 64)
+			case "session_id":
+				tmpJobsStateInfo.SessionID, _ = strconv.ParseInt(attr.Value, 10, 64)
+			case "jobdir":
+				tmpJobsStateInfo.JobDir = attr.Value
+			case "substate":
+				tmpJobsStateInfo.SubState, _ = strconv.ParseInt(attr.Value, 10, 64)
+			case "Variable_List":
+				tmpJobsStateInfo.VariableList = attr.Value
+			case "comment":
+				tmpJobsStateInfo.Comment = attr.Value
+			case "etime":
+				tmpJobsStateInfo.Etime, _ = strconv.ParseInt(attr.Value, 10, 64)
+			case "run_count":
+				tmpJobsStateInfo.RunCount, _ = strconv.ParseInt(attr.Value, 10, 64)
+			case "Submit_arguments":
+				tmpJobsStateInfo.SubmitArguments = attr.Value
+			case "project":
+				tmpJobsStateInfo.Project = attr.Value
 			default:
-				fmt.Println("other jobs resources list resource",attr.Resource)
+				fmt.Println("other jobs state", attr.Name)
 			}
-		case "stime":
-			tmpJobsStateInfo.Stime,_ = strconv.ParseInt(attr.Value,10,64)
-		case "session_id":
-			tmpJobsStateInfo.SessionID,_ = strconv.ParseInt(attr.Value,10,64)
-		case "jobdir":
-			tmpJobsStateInfo.JobDir = attr.Value
-		case "substate":
-			tmpJobsStateInfo.SubState,_ = strconv.ParseInt(attr.Value,10,64)
-		case "Variable_List":
-			tmpJobsStateInfo.VariableList = attr.Value
-		case "comment":
-			tmpJobsStateInfo.Comment = attr.Value
-		case "etime":
-			tmpJobsStateInfo.Etime,_ = strconv.ParseInt(attr.Value,10,64)
-		case "run_count":
-			tmpJobsStateInfo.RunCount,_ = strconv.ParseInt(attr.Value,10,64)
-		case "Submit_arguments":
-			tmpJobsStateInfo.SubmitArguments = attr.Value
-		case "project":
-			tmpJobsStateInfo.Project = attr.Value
-		default:
-			fmt.Println("other jobs state",attr.Name)
 		}
-			}
-	}	
-	
+	}
+
 	return nil
 }
 
