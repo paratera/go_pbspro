@@ -415,7 +415,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 		qs.ServerState = append(qs.ServerState, tmp_server_state_info)
 	}
 
-	fmt.Printf("%x", qs.ServerState)
+	fmt.Printf("%v", qs.ServerState)
 
 	return batch, nil
 }
