@@ -41,7 +41,7 @@ func TestNodeStat(t *testing.T) {
 		t.Error(err)
 	}
 
-	qstat.SetId("pc01")
+	qstat.SetID("pc01")
 	qstat.SetAttribs(nil)
 	qstat.SetExtend("")
 
@@ -72,7 +72,7 @@ func TestQueueStat(t *testing.T) {
 		t.Error(err)
 	}
 
-	qstat.SetId("workq")
+	qstat.SetID("workq")
 	qstat.SetAttribs(nil)
 	qstat.SetExtend("")
 
@@ -113,7 +113,7 @@ func TestJobStat(t *testing.T) {
 	}
 
     for i :=0;i<100;i++{
-	    qstat.SetId(fmt.Sprintf("%d",i))
+	    qstat.SetID(fmt.Sprintf("%d",i))
 		bs, err := qstat.Pbs_statjob()
 		if err != nil {
 			fmt.Println(err.Error())
