@@ -373,6 +373,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 			case "pbs_license_linger_time":
 				tmp_server_state_info.PBSLicenseLingerTime, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "license_count":
+				fmt.Println(attr.Value)
 				attr_array := strings.Split(attr.Value, " ")
 				for _, sc_valu := range attr_array {
 					scname := strings.Split(sc_valu, ":")[0]
