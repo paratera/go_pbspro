@@ -320,35 +320,35 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 			case "default_queue":
 				tmp_server_state_info.DefaultQueue = attr.Value
 			case "log_events":
-				tmp_server_state_info.LogEvents = attr.Value
+				tmp_server_state_info.LogEvents, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "mail_from":
 				tmp_server_state_info.MailFrom = attr.Value
 			case "query_other_jobs":
 				tmp_server_state_info.QueryOtherJobs = attr.Value
 			case "resources_default.ncpus":
-				tmp_server_state_info.ResourcesDefaultNcpus = attr.Value
+				tmp_server_state_info.ResourcesDefaultNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "default_chunk.ncpus":
-				tmp_server_state_info.DefaultChunkNcpus = attr.Value
+				tmp_server_state_info.DefaultChunkNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "resources_assigned.ncpus":
-				tmp_server_state_info.ResourcesAssignedNcpus = attr.Value
+				tmp_server_state_info.ResourcesAssignedNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "resources_assigned.nodect":
-				tmp_server_state_info.ResourcesAssignedNodect = attr.Value
+				tmp_server_state_info.ResourcesAssignedNodect, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "scheduler_iteration":
-				tmp_server_state_info.SchedulerIteration = attr.Value
+				tmp_server_state_info.SchedulerIteration, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "Flicenses":
-				tmp_server_state_info.Flicenses = attr.Value
+				tmp_server_state_info.Flicenses, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "resv_enable":
 				tmp_server_state_info.ResvEnable = attr.Value
 			case "node_fail_requeue":
-				tmp_server_state_info.NodeFailRequeue = attr.Value
+				tmp_server_state_info.NodeFailRequeue, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "max_array_size":
-				tmp_server_state_info.MaxArraySize = attr.Value
+				tmp_server_state_info.MaxArraySize, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "pbs_license_min":
-				tmp_server_state_info.PBSLicenseMin = attr.Value
+				tmp_server_state_info.PBSLicenseMin, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "pbs_license_max":
-				tmp_server_state_info.PBSLicenseMax = attr.Value
+				tmp_server_state_info.PBSLicenseMax, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "pbs_license_linger_time":
-				tmp_server_state_info.PBSLicenseLingerTime = attr.Value
+				tmp_server_state_info.PBSLicenseLingerTime, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "license_count":
 			case "pbs_version":
 				tmp_server_state_info.PBSVersion = attr.Value
@@ -359,7 +359,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 			case "job_history_duration":
 				tmp_server_state_info.JobHistoryDuration = attr.Value
 			case "max_concurrent_provision":
-				tmp_server_state_info.MaxConcurrentProvision = attr.Value
+				tmp_server_state_info.MaxConcurrentProvision, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "power_provisioning":
 				tmp_server_state_info.PowerProvisioning = attr.Value
 			default:
