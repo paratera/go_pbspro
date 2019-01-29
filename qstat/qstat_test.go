@@ -123,3 +123,27 @@ func TestJobStat(t *testing.T) {
 	}
 
 }
+
+func TestJobList(t *testing.T) {
+	qstat, err := NewQstat("172.18.7.10")
+	if err != nil {
+		t.Error(err)
+	}
+
+	qstat.SetAttribs(nil)
+	qstat.SetExtend("x")
+
+	err = qstat.ConnectPBS()
+	if err != nil {
+		fmt.Println("ConnectPBS Error")
+		t.Error(err)
+	}
+
+	bs, err := qstat.Pbs_selstat()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	//Print Job State Informations.
+	fmt.Println(bs)
+
+}
