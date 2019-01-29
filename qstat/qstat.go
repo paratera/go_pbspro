@@ -56,6 +56,7 @@ type (
 		JobHistoryEnable        string `json:"job_history_enable" db:"job_history_enable"`
 		JobHistoryDuration      string `json:"job_history_duration" db:"job_history_duration"`
 		MaxConcurrentProvision  int64  `json:"max_concurrent_provision" db:"max_concurrent_provision"`
+		PowerProvisioning       string `json:"power_provisioning" db:"power_provisioning"`
 	}
 
 	// qstat gather queue information.
@@ -302,15 +303,72 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 	batch := get_pbs_batch_status(batch_status)
 
 	for _, value := range batch {
+		tmp_server_state_info := new(QstatServerInfo)
 		for _, attr := range value.Attributes {
 			switch attr.Name {
 			case "server_state":
-				fmt.Println(">>>yes")
+				tmp_server_state_info.ServerState = attr.Value
+			case "server_host":
+				tmp_server_state_info.ServerHost = attr.Value
+			case "scheduling":
+				tmp_server_state_info.scheduling = attr.Value
+			case "total_jobs":
+				tmp_server_state_info.TotalJobs = attr.Value
+			case "state_count":
+
+			case "default_queue":
+				tmp_server_state_info.DefaultQueue = attr.Value
+			case "log_events":
+				tmp_server_state_info.LogEvents = attr.Value
+			case "mail_from":
+				tmp_server_state_info.MailFrom = attr.Value
+			case "query_other_jobs":
+				tmp_server_state_info.QueryOtherJobs = attr.Value
+			case "resources_default.ncpus":
+				tmp_server_state_info.ResourcesDefaultNcpus = attr.Value
+			case "default_chunk.ncpus":
+				tmp_server_state_info.DefaultChunkNcpus = attr.Value
+			case "resources_assigned.ncpus":
+				tmp_server_state_info.ResourcesAssignedNcpus = attr.Value
+			case "resources_assigned.nodect":
+				tmp_server_state_info.ResourcesAssignedNodect = attr.Value
+			case "scheduler_iteration":
+				tmp_server_state_info.SchedulerIteration = attr.Value
+			case "Flicenses":
+				tmp_server_state_info.Flicenses = attr.Value
+			case "resv_enable":
+				tmp_server_state_info.ResvEnable = attr.Value
+			case "node_fail_requeue":
+				tmp_server_state_info.NodeFailRequeue = attr.Value
+			case "max_array_size":
+				tmp_server_state_info.MaxArraySize = attr.Value
+			case "pbs_license_min":
+				tmp_server_state_info.PBSLicenseMin = attr.Value
+			case "pbs_license_max":
+				tmp_server_state_info.PBSLicenseMax = attr.Value
+			case "pbs_license_linger_time":
+				tmp_server_state_info.PBSLicenseLingerTime = attr.Value
+			case "license_count":
+			case "pbs_version":
+				tmp_server_state_info.PBSVersion = attr.Value
+			case "eligible_time_enable":
+				tmp_server_state_info.EligibleTimeEnable = attr.Value
+			case "job_history_enable":
+				tmp_server_state_info.JobHistoryEnable = attr.Value
+			case "job_history_duration":
+				tmp_server_state_info.JobHistoryDuration = attr.Value
+			case "max_concurrent_provision":
+				tmp_server_state_info.MaxConcurrentProvision = attr.Value
+			case "power_provisioning":
+				tmp_server_state_info.PowerProvisioning = attr.Value
 			default:
-				fmt.Println("default")
+				fmt.Println("other server state info.")
 			}
 		}
+		qs.QstatServerInfo = append(qs.QstatServerInfo, tmp_server_state_info)
 	}
+
+	fmt.Println(qs.QstatServerInfo)
 
 	return batch, nil
 }
