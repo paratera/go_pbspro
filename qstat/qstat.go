@@ -279,7 +279,7 @@ func (qs *Qstat) PbsQueueState() error {
 	batch_status := C.pbs_statque(C.int(qs.Handle), i, a, e)
 
 	if batch_status == nil {
-		return nil, errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
+		return errors.New(utils.Pbs_strerror(int(C.pbs_errno)))
 	}
 	defer C.pbs_statfree(batch_status)
 
