@@ -132,7 +132,7 @@ type (
 		MailPoints              string  `json:"mail_points" db:"mail_points"`
 		Mtime                   int64   `json:"mtime" db:"mtime"`
 		OutputPath              string  `json:"output_path" db:"output_path"`
-		Priorty                 int64   `json:"priorty" db:"priorty"`
+		Priority                int64   `json:"priorty" db:"priorty"`
 		Qtime                   int64   `json:"qtime" db:"qtime"`
 		Rerunable               string  `json:"rerunable" db:"rerunable"`
 		ResourceListNcpus       int64   `json:"resource_list_ncpus" db:"resource_list_ncpus"`
@@ -627,7 +627,7 @@ func (qs *Qstat) PbsJobsState() error {
 				if len(attr.Resource) == 0 {
 					break
 				}
-				switch att.Resource {
+				switch attr.Resource {
 				case "cpupercent":
 					tmpJobsStateInfo.ResourcesUsedCpuPercent, _ = strconv.ParseInt(attr.Value, 10, 64)
 				case "cput":
@@ -664,9 +664,9 @@ func (qs *Qstat) PbsJobsState() error {
 			case "Keep_Files":
 				tmpJobsStateInfo.KeepFiles = attr.Value
 			case "Mail_Points":
-				tmpJobsStateInfo.MailFrom = attr.Value
+				tmpJobsStateInfo.MailPoints = attr.Value
 			case "mtime":
-				tmpJobsStateInfo.Mtime, _ = strconv > ParseInt(attr.Value, 10, 64)
+				tmpJobsStateInfo.Mtime, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "Output_Path":
 				tmpJobsStateInfo.OutputPath = attr.Value
 			case "Priority":
