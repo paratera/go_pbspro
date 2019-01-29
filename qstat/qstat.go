@@ -644,6 +644,7 @@ func (qs *Qstat) PbsJobsState() error {
 					fmt.Println("other jobs resources used", attr.Resource)
 				}
 			}
+		}
 		case "job_state":
 			tmpJobsStateInfo.JobState = attr.Value
 		case "queue":
