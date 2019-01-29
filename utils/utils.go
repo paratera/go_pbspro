@@ -9,7 +9,6 @@ package utils
 */
 import "C"
 import (
-	"fmt"
 	"unsafe"
 
 	"github.com/juju/errors"
@@ -175,8 +174,6 @@ func Pbs_connect(server string) (int, error) {
 	if handle < 0 {
 		return 0, errors.New(Pbs_strerror(int(C.pbs_errno)))
 	}
-
-	fmt.Println("handler=", handle)
 
 	return int(handle), nil
 }
