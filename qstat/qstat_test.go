@@ -131,7 +131,7 @@ func TestJobList(t *testing.T) {
 	}
 
 	qstat.SetAttribs(nil)
-	qstat.SetExtend("x")
+	qstat.SetExtend("")
 
 	err = qstat.ConnectPBS()
 	if err != nil {
