@@ -17,6 +17,90 @@ import (
 )
 
 type (
+	// qstat gather server state information.
+	QstatServerInfo struct {
+		ServerState             string `json:"server_state" db:"server_state"`
+		ServerHost              string `json:"server_host" db:"server_host"`
+		ServerScheduling        string `json:"server_scheduling" db:"server_scheduling"`
+		TotalJobs               int64  `json:"total_jobs" db:"total_jobs"`
+		StateCountTransit       int64  `json:"state_count_transit" db:"state_count_transit"`
+		StateCountQueued        int64  `json:"state_count_queued" db:"state_count_queued"`
+		StateCountHeld          int64  `json:"state_count_held" db:"state_count_held"`
+		StateCountWaiting       int64  `json:"state_count_waiting" db:"state_count_waiting"`
+		StateCountRunning       int64  `json:"state_count_running" db:"state_count_running"`
+		StateCountExiting       int64  `json:"state_count_exiting" db:"state_count_exiting"`
+		StateCountBegun         int64  `json:"state_count_begun" db:"state_count_begun"`
+		DefaultQueue            string `json:"default_queue" db:"default_queue"`
+		LogEvents               int64  `json:"log_events" db:"log_events"`
+		MailFrom                string `json:"mail_from" db:"mail_from"`
+		QueryOtherJobs          string `json:"query_other_jobs" db:"query_other_jobs"`
+		ResourcesDefaultNcpus   int64  `json:"resources_default_ncpus" db:"resources_default_ncpus"`
+		DefaultChunkNcpus       int64  `json:"default_chunk_ncpus" db:"default_chunk_ncpus"`
+		ResourcesAssignedNcpus  int64  `json:"resources_assigned_ncpus" db:"resources_assigned_ncpus"`
+		ResourcesAssignedNodect int64  `json:"resources_assigned_nodect" db:"resources_assigned_nodect"`
+		SchedulerIteration      int64  `json:"scheduler_iteration" db:" scheduler_iteration"`
+		Flicenses               int64  `json:"flicenses" db:"flicenses"`
+		ResvEnable              string `json:"resv_enable" db:"resv_enable"`
+		NodeFailRequeue         int64  `json:"node_fail_requeue" db:"node_fail_requeue"`
+		MaxArraySize            int64  `json:"max_array_size" db:"max_array_size"`
+		PBSLicenseMin           int64  `json:"pbs_license_min" db:"pbs_license_min"`
+		PBSLicenseMax           int64  `json:"pbs_license_max" db:"pbs_license_max"`
+		PBSLicenseLingerTime    int64  `json:"pbs_license_linger_time" db:"pbs_license_linger_time"`
+		LicenseCountAvailGlobal int64  `json:"license_count_avail_global" db:"license_count_avail_global"`
+		LicenseCountAvailLocal  int64  `json:"license_count_avail_local" db:"license_count_avail_local"`
+		LicenseCountUsed        int64  `json:"license_count_used" db:"license_count_used"`
+		LicenseCountHighUse     int64  `json:"license_count_high_use" db:"license_count_high_use"`
+		PBSVersion              string `json:"pbs_version" db:"pbs_version"`
+		EligibleTimeEnable      string `json:"eligible_time_enable" db:"eligible_time_enable"`
+		JobHistoryEnable        string `json:"job_history_enable" db:"job_history_enable"`
+		JobHistoryDuration      string `json:"job_history_duration" db:"job_history_duration"`
+		MaxConcurrentProvision  int64  `json:"max_concurrent_provision" db:"max_concurrent_provision"`
+	}
+
+	// qstat gather queue information.
+	QstatQueueInfo struct {
+		QueueType               string `json:"queue_type" db:"queue_type"`
+		TotalJobs               int64  `json:"total_jobs" db:"total_jobs"`
+		StateCountTransit       int64  `json:"state_count_transit" db:"state_count_transit"`
+		StateCountQueued        int64  `json:"state_count_queued" db:"state_count_queued"`
+		StateCountHeld          int64  `json:"state_count_held" db:"state_count_held"`
+		StateCountWaiting       int64  `json:"state_count_waiting" db:"state_count_waiting"`
+		StateCountRunning       int64  `json:"state_count_running" db:"state_count_running"`
+		StateCountExiting       int64  `json:"state_count_exiting" db:"state_count_exiting"`
+		StateCountBegun         int64  `json:"state_count_begun" db:"state_count_begun"`
+		ResourcesAssignedNcpus  int64  `json:"resources_assigned_ncpus" db:"resources_assigned_ncpus"`
+		ResourcesAssignedNodect int64  `json:"resources_assigned_nodect" db:"resources_assigned_nodect"`
+		Enable                  string `json:"enable" db:"enable"`
+		Started                 string `json:"started" db:"started"`
+	}
+
+	//qstat gather node information.
+	QstatNodeInfo struct {
+		Mom                                string           `json:"mom" db:"mom"`
+		Ntype                              string           `json:"ntype" db:"ntype"`
+		State                              string           `json:'state" db:"state"`
+		Pcpus                              int64            `json:"pcpus" db:"pcpus"`
+		Jobs                               map[string]int64 `json:"jobs" db:"jobs"`
+		ResourcesAvailableArch             string           `json:"resources_available_arch" db:"resources_available_arch"`
+		ResourcesAvailableHost             string           `json:"resources_available_host" db:"resources_available_host"`
+		ResourcesAvailableMem              string           `json:"resources_available_mem" db:"resources_available_mem"`
+		ResourcesAvailableNcpus            int64            `json:"resources_available_ncpus" db:"resources_available_ncpus"`
+		ResourcesAvailableApplications     string           `json:"resources_available_pas_applications_enabled" db:"resources_available_pas_applications_enabled"`
+		ResourcesAvailablePlatform         string           `json:"resources_available_platform" db:"resources_available_platform"`
+		ResourcesAvailableSoftware         string           `json:"resources_availabled_software" db:"resources_available_software"`
+		ResourcesAvailableVnodes           string           `json:"resources_available_vnodes" db:"resources_available_vnodes"`
+		ResourcesAssignedAcceleratorMemory string           `json:"resources_assigned_accelerator_memory" db:"resources_assigned_accelerator_memory"`
+		ResourcesAssignedHbmem             string           `json:"resources_assigned_hbmem" db:"resources_assigned_hbmem"`
+		ResourcesAssignedMem               string           `json:"resources_assigned_mem" db:"resources_assigned_mem"`
+		ResourcesAssignedNaccelerators     int64            `json:"resources_assigned_naccelerators" db:"resources_assigned_naccelerators"`
+		ResourcesAssignedNcpus             int64            `json:"resources_assigned_ncpus" db:"resources_assigned_ncpus"`
+		ResourcesAssignedVmem              string           `json:"resources_assigned_vmem" db:"resources_assigned_vmem"`
+		ResvEnable                         string           `json:"resv_enable" db:"resv_enable"`
+		Sharing                            string           `json:"sharing" db:"sharing"`
+		LastStateChangeTime                int64            `json:"last_state_change_time" db:"last_state_change_time"`
+		LastUsedTime                       int64            `json:"last_used_time" db:"last_used_time"`
+	}
+
 	//定义PBS结构体
 	Qstat struct {
 		Server        string         `json:"server"`
