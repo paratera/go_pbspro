@@ -321,7 +321,6 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 				for _, sc_valu := range attr_array {
 					scname := strings.Split(sc_valu, ":")[0]
 					scval := strings.Split(sc_valu, ":")[1]
-					fmt.Println(">>>attr_array", attr_array, "sc_valu", sc_valu, "scname", scname, "scval", scval)
 					switch scname {
 					case "Transit":
 						tmp_server_state_info.StateCountTransit, _ = strconv.ParseInt(scval, 10, 64)
@@ -378,6 +377,7 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 				for _, sc_valu := range attr_array {
 					scname := strings.Split(sc_valu, ":")[0]
 					scval := strings.Split(sc_valu, ":")[1]
+					fmt.Println(">>>attr_array", attr_array, "sc_valu", sc_valu, "scname", scname, "scval", scval)
 					switch scname {
 					case "Avail_Global":
 						tmp_server_state_info.LicenseCountAvailGlobal, _ = strconv.ParseInt(scval, 10, 64)
