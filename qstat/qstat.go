@@ -319,7 +319,6 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 			case "state_count":
 				attr_array := strings.Split(attr.Value, " ")
 				for _, sc_valu := range attr_array {
-					fmt.Println("###", sc_valu)
 					if len(sc_valu) == 0 {
 						break
 					}
@@ -352,17 +351,20 @@ func (qs *Qstat) Pbs_statserver() ([]utils.BatchStatus, error) {
 				tmp_server_state_info.MailFrom = attr.Value
 			case "query_other_jobs":
 				tmp_server_state_info.QueryOtherJobs = attr.Value
-			case "resources_default.ncpus":
+			case "resources_default":
 				tmp_server_state_info.ResourcesDefaultNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
-			case "default_chunk.ncpus":
+			case "default_chunk":
 				tmp_server_state_info.DefaultChunkNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
-			case "resources_assigned.ncpus":
-				tmp_server_state_info.ResourcesAssignedNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
-			case "resources_assigned.nodect":
-				tmp_server_state_info.ResourcesAssignedNodect, _ = strconv.ParseInt(attr.Value, 10, 64)
+			case "resources_assigned":
+				if attr.Resource == "ncpus" {
+					tmp_server_state_info.ResourcesAssignedNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
+				}
+				if attr.Resource == "nodect" {
+					tmp_server_state_info.ResourcesAssignedNodect, _ = strconv.ParseInt(attr.Value, 10, 64)
+				}
 			case "scheduler_iteration":
 				tmp_server_state_info.SchedulerIteration, _ = strconv.ParseInt(attr.Value, 10, 64)
-			case "Flicenses":
+			case "FLicenses":
 				tmp_server_state_info.Flicenses, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "resv_enable":
 				tmp_server_state_info.ResvEnable = attr.Value
