@@ -113,11 +113,11 @@ type (
 		JobName                 string  `json:"job_name" db:"job_name"`
 		JobOwner                string  `json:"job_owner" db:"job_owner"`
 		ResourcesUsedCpuPercent float64 `json:"resources_used_cpupercent" db:"resources_used_cpupercent"`
-		ResourcesUsedCput       string  `json:"resources_used_cput" db:"resources_used_cput"`
-		ResourcesUsedMem        string  `json:"resources_used_mem" db:"resources_used_mem"`
+		ResourcesUsedCput       int64   `json:"resources_used_cput" db:"resources_used_cput"`
+		ResourcesUsedMem        int64   `json:"resources_used_mem" db:"resources_used_mem"`
 		ResourcesUsedNcpus      int64   `json:"resources_used_ncpus" db:"resources_used_ncpus"`
-		ResourcesUsedVmem       string  `json:"resources_used_vmem" db:"resources_used_vmem"`
-		ResourcesUsedWallTime   string  `json:"resources_used_walltime" db:"resources_used_walltime"`
+		ResourcesUsedVmem       int64   `json:"resources_used_vmem" db:"resources_used_vmem"`
+		ResourcesUsedWallTime   int64   `json:"resources_used_walltime" db:"resources_used_walltime"`
 		JobState                string  `json:"job_state" db:"job_state"`
 		Queue                   string  `json:"queue" db:"queue"`
 		Server                  string  `json:"server" db:"server"`
@@ -140,7 +140,7 @@ type (
 		ResourceListPlace       string  `json:"resource_list_place" db:"resource_list_place"`
 		ResourceListSelect      string  `json:"resource_list_select" db:"resource_list_select"`
 		ResourceListSoftware    string  `json:"resource_list_software" db:"resource_list_software"`
-		ResourceListWallTime    string  `json:"resource_list_walltime" db:"resource_list_walltime"`
+		ResourceListWallTime    int64   `json:"resource_list_walltime" db:"resource_list_walltime"`
 		Stime                   int64   `json:"stime" db:"stime"`
 		SessionID               int64   `json:"session_id" db:"session_id"`
 		JobDir                  string  `json:"jobdir" db:"jobdir"`
@@ -715,15 +715,53 @@ func (qs *Qstat) PbsJobsState() error {
 				case "cpupercent":
 					tmpJobsStateInfo.ResourcesUsedCpuPercent, _ = strconv.ParseFloat(attr.Value, 64)
 				case "cput":
-					tmpJobsStateInfo.ResourcesUsedCput = attr.Value
+					tmpDuration := strings.Split(attr.Value, ":")
+					tmpHour, _ := strconv.ParseInt(tmpDuration[0], 10, 64)
+					tmpMinute, _ := strconv.ParseInt(tmpDuration[1], 10, 64)
+					var tmpSecond int64
+					var tmpMilliSecond int64
+
+					if strings.Index(tmpDuration[2], ".") == -1 {
+						tmpSecond, _ = strconv.ParseInt(tmpDuration[2], 10, 64)
+					} else {
+						tmpSecond, _ = strconv.ParseInt(strings.Split(tmpDuration[2], ".")[0], 10, 64)
+						tmpMilliSecond, _ = strconv.ParseInt(strings.Split(tmpDuration[2], ".")[1], 10, 64)
+					}
+
+					tmpDurationMilliSeconds := tmpHour*60*60*1000 + tmpMinute*60*1000 + tmpSecond*1000 + tmpMilliSecond
+					tmpJobsStateInfo.ResourcesUsedCput = tmpDurationMilliSeconds
 				case "mem":
-					tmpJobsStateInfo.ResourcesUsedMem = attr.Value
+					if strings.Index(attr.Value, "kb") != -1 {
+						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value, "kb")[0], 10, 64)
+						tmpJobsStateInfo.ResourcesUsedMem = tmpMem * 1024
+					} else {
+						tmpJobsStateInfo.ResourcesUsedMem, _ = strconv.ParseInt(attr.Value, 10, 64)
+					}
 				case "ncpus":
 					tmpJobsStateInfo.ResourcesUsedNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
 				case "vmem":
-					tmpJobsStateInfo.ResourcesUsedVmem = attr.Value
+					if strings.Index(attr.Value, "kb") != -1 {
+						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value, "kb")[0], 10, 64)
+						tmpJobsStateInfo.ResourcesUsedVmem = tmpMem * 1024
+					} else {
+						tmpJobsStateInfo.ResourcesUsedVmem = strconv.ParseInt(attr.Value, 10, 64)
+					}
 				case "walltime":
-					tmpJobsStateInfo.ResourcesUsedWallTime = attr.Value
+					tmpDuration := strings.Split(attr.Value, ":")
+					tmpHour, _ := strconv.ParseInt(tmpDuration[0], 10, 64)
+					tmpMinute, _ := strconv.ParseInt(tmpDuration[1], 10, 64)
+					var tmpSecond int64
+					var tmpMilliSecond int64
+
+					if strings.Index(tmpDuration[2], ".") == -1 {
+						tmpSecond, _ = strconv.ParseInt(tmpDuration[2], 10, 64)
+					} else {
+						tmpSecond, _ = strconv.ParseInt(strings.Split(tmpDuration[2], ".")[0], 10, 64)
+						tmpMilliSecond, _ = strconv.ParseInt(strings.Split(tmpDuration[2], ".")[1], 10, 64)
+					}
+
+					tmpDurationMilliSeconds := tmpHour*60*60*1000 + tmpMinute*60*1000 + tmpSecond*1000 + tmpMilliSecond
+					tmpJobsStateInfo.ResourcesUsedWallTime = tmpDurationMilliSeconds
 				default:
 					fmt.Println("other jobs resources used", attr.Resource)
 				}
@@ -760,7 +798,11 @@ func (qs *Qstat) PbsJobsState() error {
 			case "qtime":
 				tmpJobsStateInfo.Qtime, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "Rerunable":
-				tmpJobsStateInfo.Rerunable = attr.Value
+				if strings.Compare(attr.Value, "True") == 0 {
+					tmpJobsStateInfo.Rerunable = 1
+				} else {
+					tmpJobsStateInfo.Rerunable = 0
+				}
 			case "Resource_List":
 				if len(attr.Resource) == 0 {
 					break
@@ -777,7 +819,21 @@ func (qs *Qstat) PbsJobsState() error {
 				case "software":
 					tmpJobsStateInfo.ResourceListSoftware = attr.Value
 				case "walltime":
-					tmpJobsStateInfo.ResourceListWallTime = attr.Value
+					tmpDuration := strings.Split(attr.Value, ":")
+					tmpHour, _ := strconv.ParseInt(tmpDuration[0], 10, 64)
+					tmpMinute, _ := strconv.ParseInt(tmpDuration[1], 10, 64)
+					var tmpSecond int64
+					var tmpMilliSecond int64
+
+					if strings.Index(tmpDuration[2], ".") == -1 {
+						tmpSecond, _ = strconv.ParseInt(tmpDuration[2], 10, 64)
+					} else {
+						tmpSecond, _ = strconv.ParseInt(strings.Split(tmpDuration[2], ".")[0], 10, 64)
+						tmpMilliSecond, _ = strconv.ParseInt(strings.Split(tmpDuration[2], ".")[1], 10, 64)
+					}
+
+					tmpDurationMilliSeconds := tmpHour*60*60*1000 + tmpMinute*60*1000 + tmpSecond*1000 + tmpMilliSecond
+					tmpJobsStateInfo.ResourceListWallTime = tmpDurationMilliSeconds
 				default:
 					fmt.Println("other jobs resources list resource", attr.Resource)
 				}
