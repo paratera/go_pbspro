@@ -611,7 +611,7 @@ func (qs *Qstat) PbsServerState() error {
 				tmpHour, _ := strconv.ParseInt(tmpDuration[0], 10, 64)
 				tmpMinute, _ := strconv.ParseInt(tmpDuration[1], 10, 64)
 				var tmpSecond int64
-				var tmpSecondMilliSecond int64
+				var tmpMilliSecond int64
 
 				if strings.Index(tmpDuration[2], ".") == -1 {
 					tmpSecond, _ = strconv.ParseInt(tmpDuration[2], 10, 64)
