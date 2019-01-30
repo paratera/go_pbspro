@@ -134,7 +134,7 @@ type (
 		OutputPath              string  `json:"output_path" db:"output_path"`
 		Priority                int64   `json:"priorty" db:"priorty"`
 		Qtime                   int64   `json:"qtime" db:"qtime"`
-		Rerunable               string  `json:"rerunable" db:"rerunable"`
+		Rerunable               int64   `json:"rerunable" db:"rerunable"`
 		ResourceListNcpus       int64   `json:"resource_list_ncpus" db:"resource_list_ncpus"`
 		ResourceListNodect      int64   `json:"resource_list_nodect" db:"resource_list_nodect"`
 		ResourceListPlace       string  `json:"resource_list_place" db:"resource_list_place"`
@@ -744,7 +744,7 @@ func (qs *Qstat) PbsJobsState() error {
 						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value, "kb")[0], 10, 64)
 						tmpJobsStateInfo.ResourcesUsedVmem = tmpMem * 1024
 					} else {
-						tmpJobsStateInfo.ResourcesUsedVmem = strconv.ParseInt(attr.Value, 10, 64)
+						tmpJobsStateInfo.ResourcesUsedVmem, _ = strconv.ParseInt(attr.Value, 10, 64)
 					}
 				case "walltime":
 					tmpDuration := strings.Split(attr.Value, ":")
