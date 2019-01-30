@@ -337,7 +337,7 @@ func (qs *Qstat) PbsNodeState() error {
 				case "host":
 					tmpServerNodeState.ResourcesAvailableHost = attr.Value
 				case "mem":
-					if strings.Compare(attr.Value, "kb") == 0 {
+					if strings.Index(attr.Value, "kb") != -1 {
 						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value, "kb")[0], 10, 64)
 						tmpServerNodeState.ResourcesAvailableMem = tmpMem * 1024
 					} else {
@@ -363,7 +363,7 @@ func (qs *Qstat) PbsNodeState() error {
 				}
 				switch attr.Resource {
 				case "accelerator_memory":
-					if strings.Compare(attr.Value, "kb") == 0 {
+					if strings.Index(attr.Value, "kb") != -1 {
 						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value, "kb")[0], 10, 64)
 						tmpServerNodeState.ResourcesAssignedAcceleratorMemory = tmpMem * 1024
 					} else {
@@ -371,7 +371,7 @@ func (qs *Qstat) PbsNodeState() error {
 						tmpServerNodeState.ResourcesAssignedAcceleratorMemory = tmpMem
 					}
 				case "hbmem":
-					if strings.Compare(attr.Value, "kb") == 0 {
+					if strings.Index(attr.Value, "kb") != -1 {
 						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value, "kb")[0], 10, 64)
 						tmpServerNodeState.ResourcesAssignedHbmem = tmpMem * 1024
 					} else {
@@ -379,7 +379,7 @@ func (qs *Qstat) PbsNodeState() error {
 						tmpServerNodeState.ResourcesAssignedHbmem = tmpMem
 					}
 				case "mem":
-					if strings.Compare(attr.Value, "kb") == 0 {
+					if strings.Index(attr.Value, "kb") != -1 {
 						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value, "kb")[0], 10, 64)
 						tmpServerNodeState.ResourcesAssignedMem = tmpMem * 1024
 					} else {
@@ -391,7 +391,7 @@ func (qs *Qstat) PbsNodeState() error {
 				case "ncpus":
 					tmpServerNodeState.ResourcesAssignedNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
 				case "vmem":
-					if strings.Compare(attr.Value, "kb") == 0 {
+					if strings.Index(attr.Value, "kb") != -1 {
 						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value, "kb")[0], 10, 64)
 						tmpServerNodeState.ResourcesAssignedVmem = tmpMem * 1024
 					} else {
