@@ -76,8 +76,8 @@ type (
 		StateCountBegun         int64  `json:"state_count_begun" db:"state_count_begun"`
 		ResourcesAssignedNcpus  int64  `json:"resources_assigned_ncpus" db:"resources_assigned_ncpus"`
 		ResourcesAssignedNodect int64  `json:"resources_assigned_nodect" db:"resources_assigned_nodect"`
-		Enable                  string `json:"enable" db:"enable"`
-		Started                 string `json:"started" db:"started"`
+		Enable                  int64  `json:"enable" db:"enable"`
+		Started                 int64  `json:"started" db:"started"`
 	}
 
 	//qstat gather node information.
@@ -453,9 +453,17 @@ func (qs *Qstat) PbsQueueState() error {
 					tmpServerQueueState.ResourcesAssignedNodect, _ = strconv.ParseInt(attr.Value, 10, 64)
 				}
 			case "enabled":
-				tmpServerQueueState.Enable = attr.Value
+				if strings.Compare(attr.Value, "True") == 0 {
+					tmpServerQueueState.Enable = 1
+				} else {
+					tmpServerQueueState.Enable = 0
+				}
 			case "started":
-				tmpServerQueueState.Started = attr.Value
+				if strings.Compare(attr.Value, "True") == 0 {
+					tmpServerQueueState.Started = 1
+				} else {
+					tmpServerQueueState.Started = 0
+				}
 			default:
 				fmt.Println("other queue state", attr.Name)
 			}
