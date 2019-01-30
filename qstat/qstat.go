@@ -90,19 +90,19 @@ type (
 		Jobs                               string `json:"jobs" db:"jobs"`
 		ResourcesAvailableArch             string `json:"resources_available_arch" db:"resources_available_arch"`
 		ResourcesAvailableHost             string `json:"resources_available_host" db:"resources_available_host"`
-		ResourcesAvailableMem              string `json:"resources_available_mem" db:"resources_available_mem"`
+		ResourcesAvailableMem              int64  `json:"resources_available_mem" db:"resources_available_mem"`
 		ResourcesAvailableNcpus            int64  `json:"resources_available_ncpus" db:"resources_available_ncpus"`
 		ResourcesAvailableApplications     string `json:"resources_available_pas_applications_enabled" db:"resources_available_pas_applications_enabled"`
 		ResourcesAvailablePlatform         string `json:"resources_available_platform" db:"resources_available_platform"`
 		ResourcesAvailableSoftware         string `json:"resources_availabled_software" db:"resources_available_software"`
 		ResourcesAvailableVnodes           string `json:"resources_available_vnodes" db:"resources_available_vnodes"`
-		ResourcesAssignedAcceleratorMemory string `json:"resources_assigned_accelerator_memory" db:"resources_assigned_accelerator_memory"`
-		ResourcesAssignedHbmem             string `json:"resources_assigned_hbmem" db:"resources_assigned_hbmem"`
-		ResourcesAssignedMem               string `json:"resources_assigned_mem" db:"resources_assigned_mem"`
+		ResourcesAssignedAcceleratorMemory int64  `json:"resources_assigned_accelerator_memory" db:"resources_assigned_accelerator_memory"`
+		ResourcesAssignedHbmem             int64  `json:"resources_assigned_hbmem" db:"resources_assigned_hbmem"`
+		ResourcesAssignedMem               int64  `json:"resources_assigned_mem" db:"resources_assigned_mem"`
 		ResourcesAssignedNaccelerators     int64  `json:"resources_assigned_naccelerators" db:"resources_assigned_naccelerators"`
 		ResourcesAssignedNcpus             int64  `json:"resources_assigned_ncpus" db:"resources_assigned_ncpus"`
-		ResourcesAssignedVmem              string `json:"resources_assigned_vmem" db:"resources_assigned_vmem"`
-		ResvEnable                         string `json:"resv_enable" db:"resv_enable"`
+		ResourcesAssignedVmem              int64  `json:"resources_assigned_vmem" db:"resources_assigned_vmem"`
+		ResvEnable                         int64  `json:"resv_enable" db:"resv_enable"`
 		Sharing                            string `json:"sharing" db:"sharing"`
 		LastStateChangeTime                int64  `json:"last_state_change_time" db:"last_state_change_time"`
 		LastUsedTime                       int64  `json:"last_used_time" db:"last_used_time"`
@@ -337,7 +337,13 @@ func (qs *Qstat) PbsNodeState() error {
 				case "host":
 					tmpServerNodeState.ResourcesAvailableHost = attr.Value
 				case "mem":
-					tmpServerNodeState.ResourcesAvailableMem = attr.Value
+					if strings.Compare(attr.Value, "kb") == 0 {
+						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value, "kb")[0], 10, 64)
+						tmpServerNodeState.ResourcesAvailableMem = tmpMem * 1024
+					} else {
+						tmpMem, _ := strconv.ParseInt(attr.Value, 10, 64)
+						tmpServerNodeState.ResourcesAvailableMem = tmpMem
+					}
 				case "ncpus":
 					tmpServerNodeState.ResourcesAvailableNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
 				case "pas_applications_enabled":
@@ -357,22 +363,50 @@ func (qs *Qstat) PbsNodeState() error {
 				}
 				switch attr.Resource {
 				case "accelerator_memory":
-					tmpServerNodeState.ResourcesAssignedAcceleratorMemory = attr.Value
+					if strings.Compare(attr.Value, "kb") == 0 {
+						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value, "kb")[0], 10, 64)
+						tmpServerNodeState.ResourcesAssignedAcceleratorMemory = tmpMem * 1024
+					} else {
+						tmpMem, _ := strconv.ParseInt(attr.Value, 10, 64)
+						tmpServerNodeState.ResourcesAssignedAcceleratorMemory = tmpMem
+					}
 				case "hbmem":
-					tmpServerNodeState.ResourcesAssignedHbmem = attr.Value
+					if strings.Compare(attr.Value, "kb") == 0 {
+						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value, "kb")[0], 10, 64)
+						tmpServerNodeState.ResourcesAssignedHbmem = tmpMem * 1024
+					} else {
+						tmpMem, _ := strconv.ParseInt(attr.Value, 10, 64)
+						tmpServerNodeState.ResourcesAssignedHbmem = tmpMem
+					}
 				case "mem":
-					tmpServerNodeState.ResourcesAssignedMem = attr.Value
+					if strings.Compare(attr.Value, "kb") == 0 {
+						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value)[0], 10, 64)
+						tmpServerNodeState.ResourcesAssignedMem = tmpMem * 1024
+					} else {
+						tmpMem, _ := strconv.ParseInt(attr.Value, 10, 64)
+						tmpServerNodeState.ResourcesAssignedMem = tmpMem
+					}
 				case "naccelerators":
 					tmpServerNodeState.ResourcesAssignedNaccelerators, _ = strconv.ParseInt(attr.Value, 10, 64)
 				case "ncpus":
 					tmpServerNodeState.ResourcesAssignedNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
 				case "vmem":
-					tmpServerNodeState.ResourcesAssignedVmem = attr.Value
+					if strings.Compare(attr.Value, "kb") == 0 {
+						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value)[0], 10, 64)
+						tmpServerNodeState.ResourcesAssignedVmem = tmpMem * 1024
+					} else {
+						tmpMem, _ := strconv.ParseInt(attr.Value, 10, 64)
+						tmpServerNodeState.ResourcesAssignedVmem = tmpMem
+					}
 				default:
 					fmt.Println("other node resources assigned", attr.Name)
 				}
 			case "resv_enable":
-				tmpServerNodeState.ResvEnable = attr.Value
+				if strings.Compare(attr.Value, "True") == 0 {
+					tmpServerNodeState.ResvEnable = 1
+				} else {
+					tmpServerNodeState.ResvEnable = 0
+				}
 			case "sharing":
 				tmpServerNodeState.Sharing = attr.Value
 			case "last_state_change_time":
