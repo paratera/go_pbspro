@@ -380,7 +380,7 @@ func (qs *Qstat) PbsNodeState() error {
 					}
 				case "mem":
 					if strings.Compare(attr.Value, "kb") == 0 {
-						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value)[0], 10, 64)
+						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value, "kb")[0], 10, 64)
 						tmpServerNodeState.ResourcesAssignedMem = tmpMem * 1024
 					} else {
 						tmpMem, _ := strconv.ParseInt(attr.Value, 10, 64)
@@ -392,7 +392,7 @@ func (qs *Qstat) PbsNodeState() error {
 					tmpServerNodeState.ResourcesAssignedNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
 				case "vmem":
 					if strings.Compare(attr.Value, "kb") == 0 {
-						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value)[0], 10, 64)
+						tmpMem, _ := strconv.ParseInt(strings.Split(attr.Value, "kb")[0], 10, 64)
 						tmpServerNodeState.ResourcesAssignedVmem = tmpMem * 1024
 					} else {
 						tmpMem, _ := strconv.ParseInt(attr.Value, 10, 64)
