@@ -23,9 +23,9 @@ type (
 	// qstat gather server state information.
 	QstatServerInfo struct {
 		ServerName              string `json:"server_name" db:"server_name"`
-		ServerState             string `json:"server_state" db:"server_state"`
+		ServerState             int64  `json:"server_state" db:"server_state"`
 		ServerHost              string `json:"server_host" db:"server_host"`
-		ServerScheduling        string `json:"server_scheduling" db:"server_scheduling"`
+		ServerScheduling        int64  `json:"server_scheduling" db:"server_scheduling"`
 		TotalJobs               int64  `json:"total_jobs" db:"total_jobs"`
 		StateCountTransit       int64  `json:"state_count_transit" db:"state_count_transit"`
 		StateCountQueued        int64  `json:"state_count_queued" db:"state_count_queued"`
@@ -37,14 +37,14 @@ type (
 		DefaultQueue            string `json:"default_queue" db:"default_queue"`
 		LogEvents               int64  `json:"log_events" db:"log_events"`
 		MailFrom                string `json:"mail_from" db:"mail_from"`
-		QueryOtherJobs          string `json:"query_other_jobs" db:"query_other_jobs"`
+		QueryOtherJobs          int64  `json:"query_other_jobs" db:"query_other_jobs"`
 		ResourcesDefaultNcpus   int64  `json:"resources_default_ncpus" db:"resources_default_ncpus"`
 		DefaultChunkNcpus       int64  `json:"default_chunk_ncpus" db:"default_chunk_ncpus"`
 		ResourcesAssignedNcpus  int64  `json:"resources_assigned_ncpus" db:"resources_assigned_ncpus"`
 		ResourcesAssignedNodect int64  `json:"resources_assigned_nodect" db:"resources_assigned_nodect"`
 		SchedulerIteration      int64  `json:"scheduler_iteration" db:" scheduler_iteration"`
 		Flicenses               int64  `json:"flicenses" db:"flicenses"`
-		ResvEnable              string `json:"resv_enable" db:"resv_enable"`
+		ResvEnable              int64  `json:"resv_enable" db:"resv_enable"`
 		NodeFailRequeue         int64  `json:"node_fail_requeue" db:"node_fail_requeue"`
 		MaxArraySize            int64  `json:"max_array_size" db:"max_array_size"`
 		PBSLicenseMin           int64  `json:"pbs_license_min" db:"pbs_license_min"`
@@ -55,11 +55,11 @@ type (
 		LicenseCountUsed        int64  `json:"license_count_used" db:"license_count_used"`
 		LicenseCountHighUse     int64  `json:"license_count_high_use" db:"license_count_high_use"`
 		PBSVersion              string `json:"pbs_version" db:"pbs_version"`
-		EligibleTimeEnable      string `json:"eligible_time_enable" db:"eligible_time_enable"`
-		JobHistoryEnable        string `json:"job_history_enable" db:"job_history_enable"`
-		JobHistoryDuration      string `json:"job_history_duration" db:"job_history_duration"`
+		EligibleTimeEnable      int64  `json:"eligible_time_enable" db:"eligible_time_enable"`
+		JobHistoryEnable        int64  `json:"job_history_enable" db:"job_history_enable"`
+		JobHistoryDuration      int64  `json:"job_history_duration" db:"job_history_duration"`
 		MaxConcurrentProvision  int64  `json:"max_concurrent_provision" db:"max_concurrent_provision"`
-		PowerProvisioning       string `json:"power_provisioning" db:"power_provisioning"`
+		PowerProvisioning       int64  `json:"power_provisioning" db:"power_provisioning"`
 	}
 
 	// qstat gather queue information.
@@ -489,11 +489,19 @@ func (qs *Qstat) PbsServerState() error {
 		for _, attr := range value.Attributes {
 			switch attr.Name {
 			case "server_state":
-				tmp_server_state_info.ServerState = attr.Value
+				if strings.Compare(attr.Value, "Active") == 0 {
+					tmp_server_state_info.ServerState = 1
+				} else {
+					tmp_server_state_info.ServerState = 0
+				}
 			case "server_host":
 				tmp_server_state_info.ServerHost = attr.Value
 			case "scheduling":
-				tmp_server_state_info.ServerScheduling = attr.Value
+				if strings.Compare(attr.Value, "True") == 0 {
+					tmp_server_state_info.ServerScheduling = 1
+				} else {
+					tmp_server_state_info.ServerScheduling = 0
+				}
 			case "total_jobs":
 				tmp_server_state_info.TotalJobs, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "state_count":
@@ -530,7 +538,11 @@ func (qs *Qstat) PbsServerState() error {
 			case "mail_from":
 				tmp_server_state_info.MailFrom = attr.Value
 			case "query_other_jobs":
-				tmp_server_state_info.QueryOtherJobs = attr.Value
+				if strings.Compare(attr.Value, "True") == 0 {
+					tmp_server_state_info.QueryOtherJobs = 1
+				} else {
+					tmp_server_state_info.QueryOtherJobs = 0
+				}
 			case "resources_default":
 				tmp_server_state_info.ResourcesDefaultNcpus, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "default_chunk":
@@ -547,7 +559,11 @@ func (qs *Qstat) PbsServerState() error {
 			case "FLicenses":
 				tmp_server_state_info.Flicenses, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "resv_enable":
-				tmp_server_state_info.ResvEnable = attr.Value
+				if strings.Compare(attr.Value, "True") == 0 {
+					tmp_server_state_info.ResvEnable = 1
+				} else {
+					tmp_server_state_info.ResvEnable = 0
+				}
 			case "node_fail_requeue":
 				tmp_server_state_info.NodeFailRequeue, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "max_array_size":
@@ -579,15 +595,34 @@ func (qs *Qstat) PbsServerState() error {
 			case "pbs_version":
 				tmp_server_state_info.PBSVersion = attr.Value
 			case "eligible_time_enable":
-				tmp_server_state_info.EligibleTimeEnable = attr.Value
+				if strings.Compare(attr.Value, "True") == 0 {
+					tmp_server_state_info.EligibleTimeEnable = 1
+				} else {
+					tmp_server_state_info.EligibleTimeEnable = 0
+				}
 			case "job_history_enable":
-				tmp_server_state_info.JobHistoryEnable = attr.Value
+				if strings.Compare(attr.Value, "True") == 0 {
+					tmp_server_state_info.JobHistoryEnable = 1
+				} else {
+					tmp_server_state_info.JobHistoryEnable = 0
+				}
 			case "job_history_duration":
-				tmp_server_state_info.JobHistoryDuration = attr.Value
+				tmpDuration := strings.Split(attr.Value, ":")
+				tmpHour, _ := strconv.ParseInt(tmpDuration[0], 10, 64)
+				tmpMinute, _ := strconv.ParseInt(tmpDuration[1], 10, 64)
+				tmpSecond, _ := strconv.ParseInt(strings.Split(tmpDuration[2], ".")[0], 10, 64)
+				tmpMilliSecond, _ := strconv.ParseInt(strings.Split(tmpDuration[2], ".")[1], 10, 64)
+
+				tmpDurationMilliSeconds := tmpHour*60*60*1000 + tmpMinute*60*1000 + tmpSecond*1000 + tmpMilliSecond
+				tmp_server_state_info.JobHistoryDuration = tmpDurationMilliSeconds
 			case "max_concurrent_provision":
 				tmp_server_state_info.MaxConcurrentProvision, _ = strconv.ParseInt(attr.Value, 10, 64)
 			case "power_provisioning":
-				tmp_server_state_info.PowerProvisioning = attr.Value
+				if strings.Compare(attr.Value, "True") == 0 {
+					tmp_server_state_info.PowerProvisioning = 1
+				} else {
+					tmp_server_state_info.PowerProvisioning = 0
+				}
 			default:
 				fmt.Println("other server state info.", attr.Name)
 			}
