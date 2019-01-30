@@ -610,8 +610,12 @@ func (qs *Qstat) PbsServerState() error {
 				tmpDuration := strings.Split(attr.Value, ":")
 				tmpHour, _ := strconv.ParseInt(tmpDuration[0], 10, 64)
 				tmpMinute, _ := strconv.ParseInt(tmpDuration[1], 10, 64)
-				tmpSecond, _ := strconv.ParseInt(strings.Split(tmpDuration[2], ".")[0], 10, 64)
-				tmpMilliSecond, _ := strconv.ParseInt(strings.Split(tmpDuration[2], ".")[1], 10, 64)
+				if strings.Index(tmpDuration[2], ".") == -1 {
+					tmpSecond, _ := strconv.ParseInt(tmpDuration[2], 10, 64)
+				} else {
+					tmpSecond, _ := strconv.ParseInt(strings.Split(tmpDuration[2], ".")[0], 10, 64)
+					tmpMilliSecond, _ := strconv.ParseInt(strings.Split(tmpDuration[2], ".")[1], 10, 64)
+				}
 
 				tmpDurationMilliSeconds := tmpHour*60*60*1000 + tmpMinute*60*1000 + tmpSecond*1000 + tmpMilliSecond
 				tmp_server_state_info.JobHistoryDuration = tmpDurationMilliSeconds
