@@ -873,7 +873,7 @@ func (qs *Qstat) PbsJobsState() error {
 					case "PBS_O_MAIL":
 						tmpJobsStateInfo.VariableListMail = elemsValue
 					case "PBS_O_SHELL":
-						sliceCap, _ := strconv.ParseInt(cap(strings.Split(elemsValue, "/")), 10, 64)
+						sliceCap := int(cap(strings.Split(elemsValue, "/")))
 						tmpJobsStateInfo.VariableListShell = strings.Split(elemsValue, "/")[sliceCap-1]
 					case "PBS_O_WORKDIR":
 						tmpJobsStateInfo.VariableListWorkdir = elemsValue
