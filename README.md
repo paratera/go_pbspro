@@ -1,7 +1,8 @@
-# PBSpro golang library
+# Golang library of PBSPro
 
-This is a thin Go wrapper around the C library (libpbs) for the [PBSpro resource manager]
+**This is not an official Paratera product**
 
+This is a thin Go wrapper around the C library (libpbs) for the [PBSPro resource manager]
 
 ## 1.Requirements
 
