@@ -16,7 +16,7 @@ import (
 
 	"github.com/juju/errors"
 
-	"github.com/taylor840326/go_pbspro/utils"
+	"github.com/paratera/go_pbspro/utils"
 )
 
 type (

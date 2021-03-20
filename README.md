@@ -46,7 +46,7 @@ A PBSpro Cluster to test.
 ## 2.Install
 
 ```bash
-# go get github.com/taylor840326/go_pbspro
+# go get github.com/paratera/go_pbspro
 ```
 
 ## 3. Usage
@@ -55,7 +55,7 @@ A PBSpro Cluster to test.
     package main
 
     import (
-        "github.com/taylor840326/go_pbspro"
+        "github.com/paratera/go_pbspro"
         "log"
     )
 
